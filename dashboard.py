@@ -204,13 +204,13 @@ with col1:
     st.write("#### 전체 인원 현황")
     st.markdown(f"##### 총 플레이어: **{total_players}**명")
     st.markdown(f"##### 유효 플레이어: **{valid_players_count}**명")
+    st.markdown(f"##### 유예인원 최다티어: **{max_pending_tier_text}**")
     st.markdown(f"##### 평가유예 플레이어: **{pending_players_count}**명")
     st.markdown(f"##### 비활성화 플레이어: **{inactive_players_count}**명")
-    st.markdown(f"##### 최다 유예 티어: **{max_pending_tier_text}**")
 
 with col2:
-    st.write("#### 티어별 인원 분포")
-
+    st.markdown("<h3 style='text-align: center;'>티어별 인원 분포</h3>", unsafe_allow_html=True)
+    
     color_map = {'유효': '#636EFA', '평가유예': 'lightgrey', '비활성화': 'black'}
     
     fig = px.bar(
@@ -223,11 +223,10 @@ with col2:
     )
     
     fig.update_traces(
-        textposition='outside',  
-        textfont=dict(color='black', size=14),  
+        textposition='outside',
+        textfont=dict(color='black', size=14),
         selector=dict(type='bar')
     )
-    # 값이 0인 막대에서는 텍스트를 표시하지 않음
     fig.for_each_trace(lambda t: t.update(texttemplate = ["" if v == 0 else f"{v:,.0f}" for v in t.y]))
     
     fig.update_layout(
@@ -236,7 +235,8 @@ with col2:
         barmode='stack',
         legend_title_text='분류',
         yaxis=dict(visible=False),
-        height=500
+        height=500,
+        margin=dict(t=20) # 차트와 제목 사이의 상단 여백을 줄임
     )
     fig.update_xaxes(type='category', tickangle=0, tickfont=dict(color='black', size=12))
     
