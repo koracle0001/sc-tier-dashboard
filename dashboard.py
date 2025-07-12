@@ -61,9 +61,14 @@ def classify_player(row):
 # --------------------
 
 # --- 대시보드 제목 설정 ---
-st.markdown("##### 평가기간: 2025-05-24 ~ 2025-07-16")
 st.title('⭐ 스타크래프트 여캠 밸런스 티어표 및 분석로그')
-
+st.markdown("""
+<div style="text-align: right;">
+    <p style="margin-bottom: 0;">평가기간: 2025-05-24 ~ 2025-07-16</p>
+    <p style="font-size: 1.1em; color: black; margin-bottom: 0.1em;"><b>데이터 갱신일: 2025-07-16</b></p>
+    <p style="font-size: 0.9em; color: black;">제작자: UnKn0wn1</p>
+</div>
+""", unsafe_allow_html=True)
 # --- 데이터 파일 불러오기 ---
 try:
     df = pd.read_excel('public_report.xlsx')
@@ -285,12 +290,4 @@ with col2:
     config = {'staticPlot': True}
     st.plotly_chart(fig, use_container_width=True, config=config)
 
-# --- 페이지 하단 정보 ---
-st.divider()
-st.markdown("""
-<div style="text-align: right;">
-    <p style="font-size: 16px; color: black; margin-bottom: 0;"><b>데이터 갱신일: 2025-07-16</b></p>
-    <p style="font-size: 14px; color: grey;">제작자: UnKn0wn1</p>
-</div>
-""", unsafe_allow_html=True)
-
+ 
