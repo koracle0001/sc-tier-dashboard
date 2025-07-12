@@ -62,11 +62,12 @@ except FileNotFoundError:
 for col in ['동티어 승률', '상위티어 승률', '하위티어 승률']:
     df[f'{col}_numeric'] = df[col].astype(str).str.extract(r'(\d+\.?\d*)').astype(float).fillna(0)
     df[f'{col.split(" ")[0]}_경기수'] = df[col].astype(str).str.extract(r'\((\d+)\s*게임\)').astype(float).fillna(0)
-
-display_columns = [col for col in df.columns if not col.endswith(('_numeric', '_경기수'))]
-display_df = df[display_columns]
+df['분류'] = df['티어 내 순위'].apply(lambda x: '평가유예' if x == '-' else '유효')
 
 st.header('밸런스 티어표')
+display_columns = [col for col in df.columns if not col.endswith(('_numeric', '_경기수', '분류'))]
+display_df = df[display_columns]
+
 styled_df = display_df.style.apply(highlight_rows, axis=1) \
                           .set_properties(**{'text-align': 'center'}) \
                           .format({
@@ -74,7 +75,6 @@ styled_df = display_df.style.apply(highlight_rows, axis=1) \
                               '표리부동': lambda x: f'{x:.2f}' if isinstance(x, (int, float)) else x
                           })
 st.dataframe(styled_df, use_container_width=True)
-
 
 # --- 기간 내 주요 선수 ---
 st.divider()
