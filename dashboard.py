@@ -77,21 +77,33 @@ for col in ['동티어 승률', '상위티어 승률', '하위티어 승률']:
 df['분류'] = df.apply(classify_player, axis=1)
 
 st.header('밸런스 티어표')
+st.markdown("""
+<style>
+/* 데이터프레임의 모든 셀(td)과 헤더(th)를 가운데 정렬 */
+.stDataFrame th, .stDataFrame td {
+    text-align: center !important;
+}
+/* 데이터프레임의 첫 번째 열('이름' 컬럼)에 최소 너비를 지정하여 잘림 방지 */
+.stDataFrame th:nth-child(1), .stDataFrame td:nth-child(1) {
+    min-width: 120px !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# 화면에 표시할 최종 데이터프레임
 display_columns = [col for col in df.columns if not col.endswith(('_numeric', '_경기수', '분류'))]
 display_df = df[display_columns]
 
+# 배경색과 숫자 서식만 Styler로 처리
 styled_df = display_df.style.apply(highlight_rows, axis=1) \
                           .format({
                               '클러치': lambda x: f'{x:.2f}' if isinstance(x, (int, float)) else x,
                               '표리부동': lambda x: f'{x:.2f}' if isinstance(x, (int, float)) else x
-                          }) \
-                          .set_table_styles([
-                              dict(selector="th, td", props=[("text-align", "center")]),
-                              dict(selector="th:first-child", props=[("min-width", "100px")]),
-                              dict(selector="td:first-child", props=[("min-width", "100px")]),
-                          ])
+                          })
 
-st.markdown(styled_df.to_html(escape=False), unsafe_allow_html=True)
+# 최종적으로 st.dataframe으로 표를 표시
+st.dataframe(styled_df, use_container_width=True, hide_index=True)
+
 
 # --- 기간 내 주요 이슈 ---
 st.divider()
