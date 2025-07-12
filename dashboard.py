@@ -216,7 +216,7 @@ with col1:
         st.text(format_player_list_by_tier(irregular_df, 'irregular'))
 
 with col2:
-    st.markdown("#### 📋 세부 지표 분석 (유효 플레이어 기준)")
+    st.markdown("#### 📋 세부 지표 분석 (유효 플레이어 기준!)")
 
     highest_table_html = create_win_rate_table("🏆", "최고 승률 Top 5", (top5_highest_same, top5_highest_higher, top5_highest_lower))
     st.markdown(highest_table_html, unsafe_allow_html=True)
