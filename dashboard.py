@@ -58,7 +58,7 @@ def classify_player(row):
     
 def display_win_rate_top5(column, dataframe, stat_name_kor, stat_name_eng):
     with column:
-        st.markdown(f"**{stat_name_kor}**")
+        st.markdown(f"<p style='font-weight: bold; margin-bottom: 5px;'>{stat_name_kor}</p>", unsafe_allow_html=True)
         if dataframe.empty:
             st.markdown("<p style='font-size: 0.9em; color: grey;'>해당 없음</p>", unsafe_allow_html=True)
         for i, (_, row) in enumerate(dataframe.iterrows()):
@@ -66,7 +66,7 @@ def display_win_rate_top5(column, dataframe, stat_name_kor, stat_name_eng):
             match_count_col = f'{stat_name_eng}_경기수'
             
             st.markdown(f"""
-            <div style="line-height: 1.2; margin-bottom: 8px; font-size: 0.9em;">
+            <div style="line-height: 1.1; margin-bottom: 2px; font-size: 0.9em;">
                 {i+1}. {int(row['현재 티어'])}티어 {row['이름']}<br>
                 <span style='font-size:0.9em; color:grey;'>({int(row[match_count_col])}게임, {row[win_rate_col]:.1f}%)</span>
             </div>
@@ -181,14 +181,14 @@ with col1:
 
 with col2:
     st.markdown("#### 📋 세부 지표 분석 (유효 플레이어 기준)")
-    
-    st.markdown("##### 🏆 최고 승률 Top 3")
+
+    st.markdown("<h5 style='margin-top: 1rem; margin-bottom: 0.5rem;'>🏆 최고 승률 Top 3</h5>", unsafe_allow_html=True)
     sub_col1, sub_col2, sub_col3 = st.columns(3)
     display_win_rate_top5(sub_col1, top5_highest_same, "동티어승률(40전 이상)", "동티어")
     display_win_rate_top5(sub_col2, top5_highest_higher, "상위티어승률(20전 이상)", "상위티어")
     display_win_rate_top5(sub_col3, top5_highest_lower, "하위티어승률(20전 이상)", "하위티어")
 
-    st.markdown("##### 💀 최저 승률 Top 3")
+    st.markdown("<h5 style='margin-top: 1.5rem; margin-bottom: 0.5rem;'>💀 최저 승률 Top 3</h5>", unsafe_allow_html=True)
     sub_col1, sub_col2, sub_col3 = st.columns(3)
     display_win_rate_top5(sub_col1, top5_lowest_same, "동티어승률(40전 이상)", "동티어")
     display_win_rate_top5(sub_col2, top5_lowest_higher, "상위티어승률(20전 이상)", "상위티어")
