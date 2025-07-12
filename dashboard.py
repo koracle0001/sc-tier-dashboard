@@ -206,19 +206,16 @@ with col2:
     st.markdown("💀 **최저 승률**<br>" + "<br>".join([f"&nbsp;&nbsp;&nbsp;└ {text}" for text in lowest_win_rate_texts]), unsafe_allow_html=True)
 
     # 2. 나머지 세부 지표
-    st.markdown("💪 **최다 경기 Top 5**")
-    for i, (_, row) in enumerate(top_5_matches.iterrows()):
-        st.markdown(f"&nbsp;&nbsp;&nbsp;{i+1}. **{int(row['현재 티어'])}티어** {row['이름']} ({int(row['총 경기수'])} 경기)")
+    matches_texts = [f"{i+1}. **{int(row['현재 티어'])}티어** {row['이름']} ({int(row['총 경기수'])} 경기)" for i, (_, row) in enumerate(top_5_matches.iterrows())]
+    st.markdown("💪 **최다 경기 Top 5**<br>" + "<br>".join([f"&nbsp;&nbsp;{text}" for text in matches_texts]), unsafe_allow_html=True)
     st.write("") 
 
-    st.markdown("🎯 **최고 클러치 Top 5**")
-    for i, (_, row) in enumerate(top_5_clutch.iterrows()):
-        st.markdown(f"&nbsp;&nbsp;&nbsp;{i+1}. **{int(row['현재 티어'])}티어** {row['이름']} ({float(row['클러치']):.2f})")
+    clutch_texts = [f"{i+1}. **{int(row['현재 티어'])}티어** {row['이름']} ({float(row['클러치']):.2f})" for i, (_, row) in enumerate(top_5_clutch.iterrows())]
+    st.markdown("🎯 **최고 클러치 Top 5**<br>" + "<br>".join([f"&nbsp;&nbsp;{text}" for text in clutch_texts]), unsafe_allow_html=True)
     st.write("")
 
-    st.markdown("🤔 **최고 표리부동 Top 5**")
-    for i, (_, row) in enumerate(top_5_hypocrisy.iterrows()):
-        st.markdown(f"&nbsp;&nbsp;&nbsp;{i+1}. **{int(row['현재 티어'])}티어** {row['이름']} ({float(row['표리부동']):.2f})")
+    hypocrisy_texts = [f"{i+1}. **{int(row['현재 티어'])}티어** {row['이름']} ({float(row['표리부동']):.2f})" for i, (_, row) in enumerate(top_5_hypocrisy.iterrows())]
+    st.markdown("🤔 **최고 표리부동 Top 5**<br>" + "<br>".join([f"&nbsp;&nbsp;{text}" for text in hypocrisy_texts]), unsafe_allow_html=True)
 
 with col3:
     st.markdown("#### ℹ️ 지표 설명")
