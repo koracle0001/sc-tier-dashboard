@@ -55,6 +55,30 @@ def classify_player(row):
         return '평가유예'
     else:
         return '유효'
+    
+def display_top5_list(title, icon, dataframe, col_name_kor, col_name_eng):
+    """Top 5 데이터를 받아 간결한 Markdown 리스트를 생성하는 함수"""
+    st.markdown(f"{icon} **{title}**")
+    
+    if dataframe.empty:
+        st.markdown(f"<p style='font-size: 0.9em; color: grey;'>&nbsp;&nbsp;&nbsp;└ {col_name_kor}: 해당 없음</p>", unsafe_allow_html=True)
+        return
+
+    list_items = []
+    for i, (_, row) in enumerate(dataframe.iterrows()):
+        line1 = f"{i+1}. {int(row['현재 티어'])}티어 {row['이름']}"
+        line2 = f"<span style='font-size:0.9em; color:grey;'>({int(row[f'{col_name_eng}_경기수'])}게임, {row[f'{col_name_eng}_승률_numeric']:.1f}%)</span>"
+        list_items.append(f"<li style='line-height: 1.4;'>{line1}<br>{line2}</li>")
+    
+    full_html = f"""
+    <div style="font-size: 0.9em;">
+    <p style="margin-bottom: 5px;"><b>{col_name_kor}</b></p>
+    <ul style="list-style-type: none; padding-left: 10px; margin-top: 0;">
+    {''.join(list_items)}
+    </ul>
+    </div>
+    """
+    st.markdown(full_html, unsafe_allow_html=True)
 
 # --------------------
 # 메인 대시보드
@@ -165,35 +189,14 @@ with col1:
 
 with col2:
     st.markdown("#### 📋 세부 지표 분석 (유효 플레이어 기준)")
-    # --- 최고 승률 Top 5 ---
-    st.markdown("##### 🏆 최고 승률 Top 5")
-    sub_col1, sub_col2, sub_col3 = st.columns(3)
-    def display_win_rate_top5(column, dataframe, stat_name_kor, stat_name_eng):
-        with column:
-            st.markdown(f"**{stat_name_kor}**")
-            if dataframe.empty:
-                st.markdown("<p style='font-size: 0.9em; color: grey;'>해당 없음</p>", unsafe_allow_html=True)
-            for i, (_, row) in enumerate(dataframe.iterrows()):
-                win_rate_col = f'{stat_name_eng} 승률_numeric'
-                match_count_col = f'{stat_name_eng}_경기수'
-
-                st.markdown(f"""
-                <div style="line-height: 1.2; margin-bottom: 8px; font-size: 0.9em;">
-                    {i+1}. {int(row['현재 티어'])}티어 {row['이름']}<br>
-                    <span style='font-size:0.9em; color:grey;'>({int(row[match_count_col])}게임, {row[win_rate_col]:.1f}%)</span>
-                </div>
-                """, unsafe_allow_html=True)
     
-    display_win_rate_top5(sub_col1, top5_highest_same, "동티어승률(40전 이상)", "동티어")
-    display_win_rate_top5(sub_col2, top5_highest_higher, "상위티어승률(20전 이상)", "상위티어")
-    display_win_rate_top5(sub_col3, top5_highest_lower, "하위티어승률(20전 이상)", "하위티어")
+    display_top5_list("최고 승률", "🏆", top5_highest_same, "동티어승률(40전 이상)", "동티어")
+    display_top5_list("최고 승률", "🏆", top5_highest_higher, "상위티어승률(20전 이상)", "상위티어")
+    display_top5_list("최고 승률", "🏆", top5_highest_lower, "하위티어승률(20전 이상)", "하위티어")
 
-    # --- 최저 승률 Top 5 ---
-    st.markdown("##### 💀 최저 승률 Top 5")
-    sub_col1, sub_col2, sub_col3 = st.columns(3)
-    display_win_rate_top5(sub_col1, top5_lowest_same, "동티어승률(40전 이상)", "동티어")
-    display_win_rate_top5(sub_col2, top5_lowest_higher, "상위티어승률(20전 이상)", "상위티어")
-    display_win_rate_top5(sub_col3, top5_lowest_lower, "하위티어승률(20전 이상)", "하위티어")
+    display_top5_list("최저 승률", "💀", top5_lowest_same, "동티어승률(40전 이상)", "동티어")
+    display_top5_list("최저 승률", "💀", top5_lowest_higher, "상위티어승률(20전 이상)", "상위티어")
+    display_top5_list("최저 승률", "💀", top5_lowest_lower, "하위티어승률(20전 이상)", "하위티어")
 
     st.markdown("---")
     sub_col1, sub_col2, sub_col3 = st.columns(3)
