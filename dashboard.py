@@ -172,26 +172,25 @@ with col2:
     h_col1.markdown("<p style='font-size:0.9em; font-weight:bold;'>동티어(40전+)</p>", unsafe_allow_html=True)
     h_col2.markdown("<p style='font-size:0.9em; font-weight:bold;'>상위티어(20전+)</p>", unsafe_allow_html=True)
     h_col3.markdown("<p style='font-size:0.9em; font-weight:bold;'>하위티어(20전+)</p>", unsafe_allow_html=True)
-    st.markdown("---")
     # 랭킹
     for i in range(5):
         r_col1, r_col2, r_col3 = st.columns(3)
         # 동티어
         try:
             p = top5_highest_same.iloc[i]
-            r_col1.markdown(f"**{i+1}.** {int(p['현재 티어'])}T {p['이름']} `({int(p['동티어_경기수'])}G, {p['동티어 승률_numeric']:.1f}%)`")
+            r_col1.markdown(f"**{i+1}.** {int(p['현재 티어'])}티어 {p['이름']} `({int(p['동티어_경기수'])}G, {p['동티어 승률_numeric']:.1f}%)`")
         except IndexError:
             r_col1.markdown(f"**{i+1}.** -")
         # 상위티어
         try:
             p = top5_highest_higher.iloc[i]
-            r_col2.markdown(f"**{i+1}.** {int(p['현재 티어'])}T {p['이름']} `({int(p['상위티어_경기수'])}G, {p['상위티어 승률_numeric']:.1f}%)`")
+            r_col2.markdown(f"**{i+1}.** {int(p['현재 티어'])}티어 {p['이름']} `({int(p['상위티어_경기수'])}G, {p['상위티어 승률_numeric']:.1f}%)`")
         except IndexError:
             r_col2.markdown(f"**{i+1}.** -")
         # 하위티어
         try:
             p = top5_highest_lower.iloc[i]
-            r_col3.markdown(f"**{i+1}.** {int(p['현재 티어'])}T {p['이름']} `({int(p['하위티어_경기수'])}G, {p['하위티어 승률_numeric']:.1f}%)`")
+            r_col3.markdown(f"**{i+1}.** {int(p['현재 티어'])}티어 {p['이름']} `({int(p['하위티어_경기수'])}G, {p['하위티어 승률_numeric']:.1f}%)`")
         except IndexError:
             r_col3.markdown(f"**{i+1}.** -")
 
@@ -202,26 +201,25 @@ with col2:
     h_col1.markdown("<p style='font-size:0.9em; font-weight:bold;'>동티어(40전+)</p>", unsafe_allow_html=True)
     h_col2.markdown("<p style='font-size:0.9em; font-weight:bold;'>상위티어(20전+)</p>", unsafe_allow_html=True)
     h_col3.markdown("<p style='font-size:0.9em; font-weight:bold;'>하위티어(20전+)</p>", unsafe_allow_html=True)
-    st.markdown("---")
     # 랭킹
     for i in range(5):
         r_col1, r_col2, r_col3 = st.columns(3)
         # 동티어
         try:
             p = top5_lowest_same.iloc[i]
-            r_col1.markdown(f"**{i+1}.** {int(p['현재 티어'])}T {p['이름']} `({int(p['동티어_경기수'])}G, {p['동티어 승률_numeric']:.1f}%)`")
+            r_col1.markdown(f"**{i+1}.** {int(p['현재 티어'])}티어 {p['이름']} `({int(p['동티어_경기수'])}G, {p['동티어 승률_numeric']:.1f}%)`")
         except IndexError:
             r_col1.markdown(f"**{i+1}.** -")
         # 상위티어
         try:
             p = top5_lowest_higher.iloc[i]
-            r_col2.markdown(f"**{i+1}.** {int(p['현재 티어'])}T {p['이름']} `({int(p['상위티어_경기수'])}G, {p['상위티어 승률_numeric']:.1f}%)`")
+            r_col2.markdown(f"**{i+1}.** {int(p['현재 티어'])}티어 {p['이름']} `({int(p['상위티어_경기수'])}G, {p['상위티어 승률_numeric']:.1f}%)`")
         except IndexError:
             r_col2.markdown(f"**{i+1}.** -")
         # 하위티어
         try:
             p = top5_lowest_lower.iloc[i]
-            r_col3.markdown(f"**{i+1}.** {int(p['현재 티어'])}T {p['이름']} `({int(p['하위티어_경기수'])}G, {p['하위티어 승률_numeric']:.1f}%)`")
+            r_col3.markdown(f"**{i+1}.** {int(p['현재 티어'])}티어 {p['이름']} `({int(p['하위티어_경기수'])}G, {p['하위티어 승률_numeric']:.1f}%)`")
         except IndexError:
             r_col3.markdown(f"**{i+1}.** -")
 
