@@ -151,15 +151,15 @@ highest_clutch_player = valid_players_df.loc[valid_players_df['클러치_numeric
 highest_hypocrisy_player = valid_players_df.loc[valid_players_df['표리부동_numeric_safe'].idxmax()]
 
 same_tier_filtered_df = valid_players_df[valid_players_df['동티어_경기수'] >= 40]
-top5_highest_same = same_tier_filtered_df.sort_values(by='동티어 승률_numeric', ascending=False).head(5)
+top5_highest_same = same_tier_filtered_df.sort_values(by='동티어 승률_numeric', ascending=False).head(3)
 higher_tier_filtered_df = valid_players_df[valid_players_df['상위티어_경기수'] >= 20]
-top5_highest_higher = higher_tier_filtered_df.sort_values(by='상위티어 승률_numeric', ascending=False).head(5)
+top5_highest_higher = higher_tier_filtered_df.sort_values(by='상위티어 승률_numeric', ascending=False).head(3)
 lower_tier_filtered_df = valid_players_df[valid_players_df['하위티어_경기수'] >= 20]
-top5_highest_lower = lower_tier_filtered_df.sort_values(by='하위티어 승률_numeric', ascending=False).head(5)
+top5_highest_lower = lower_tier_filtered_df.sort_values(by='하위티어 승률_numeric', ascending=False).head(3)
 
-top5_lowest_same = same_tier_filtered_df.sort_values(by='동티어 승률_numeric', ascending=True).head(5)
-top5_lowest_higher = higher_tier_filtered_df[higher_tier_filtered_df['상위티어 승률_numeric'] > 0].sort_values(by='상위티어 승률_numeric', ascending=True).head(5)
-top5_lowest_lower = lower_tier_filtered_df[lower_tier_filtered_df['하위티어 승률_numeric'] > 0].sort_values(by='하위티어 승률_numeric', ascending=True).head(5)
+top5_lowest_same = same_tier_filtered_df.sort_values(by='동티어 승률_numeric', ascending=True).head(3)
+top5_lowest_higher = higher_tier_filtered_df[higher_tier_filtered_df['상위티어 승률_numeric'] > 0].sort_values(by='상위티어 승률_numeric', ascending=True).head(3)
+top5_lowest_lower = lower_tier_filtered_df[lower_tier_filtered_df['하위티어 승률_numeric'] > 0].sort_values(by='하위티어 승률_numeric', ascending=True).head(3)
 
 metrics_players_df = valid_players_df[~valid_players_df['현재 티어'].isin([0, 1, 9])]
 
@@ -180,15 +180,15 @@ with col1:
         st.text(format_player_list_by_tier(irregular_df, 'irregular'))
 
 with col2:
-    st.markdown("#### 📋 세부 지표 분석 (유효 플레이어 기준!)")
+    st.markdown("#### 📋 세부 지표 분석 (유효 플레이어 기준)")
     
-    st.markdown("##### 🏆 최고 승률 Top 5")
+    st.markdown("##### 🏆 최고 승률 Top 3")
     sub_col1, sub_col2, sub_col3 = st.columns(3)
     display_win_rate_top5(sub_col1, top5_highest_same, "동티어승률(40전 이상)", "동티어")
     display_win_rate_top5(sub_col2, top5_highest_higher, "상위티어승률(20전 이상)", "상위티어")
     display_win_rate_top5(sub_col3, top5_highest_lower, "하위티어승률(20전 이상)", "하위티어")
 
-    st.markdown("##### 💀 최저 승률 Top 5")
+    st.markdown("##### 💀 최저 승률 Top 3")
     sub_col1, sub_col2, sub_col3 = st.columns(3)
     display_win_rate_top5(sub_col1, top5_lowest_same, "동티어승률(40전 이상)", "동티어")
     display_win_rate_top5(sub_col2, top5_lowest_higher, "상위티어승률(20전 이상)", "상위티어")
