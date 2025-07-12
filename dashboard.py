@@ -85,9 +85,13 @@ promoted_df = df[df['티어 변동'].isin(['승급'])]
 demoted_df = df[df['티어 변동'] == '강등']
 irregular_df = df[df['상태'] == '이레귤러'] if '상태' in df.columns else pd.DataFrame()
 
-most_matches_player = df.loc[df['총 경기수'].astype(int).idxmax()]
-highest_clutch_player = df.loc[df['클러치'].replace('-', -999).astype(float).idxmax()]
-highest_hypocrisy_player = df.loc[df['표리부동'].replace('-', -999).astype(float).idxmax()]
+df['총 경기수_numeric_safe'] = pd.to_numeric(df['총 경기수'], errors='coerce')
+df['클러치_numeric_safe'] = pd.to_numeric(df['클러치'], errors='coerce')
+df['표리부동_numeric_safe'] = pd.to_numeric(df['표리부동'], errors='coerce')
+
+most_matches_player = df.loc[df['총 경기수_numeric_safe'].idxmax()]
+highest_clutch_player = df.loc[df['클러치_numeric_safe'].idxmax()]
+highest_hypocrisy_player = df.loc[df['표리부동_numeric_safe'].idxmax()]
 
 same_tier_filtered_df = df[df['동티어_경기수'] >= 40]
 highest_same_tier_wr_player = same_tier_filtered_df.loc[same_tier_filtered_df['동티어 승률_numeric'].idxmax()] if not same_tier_filtered_df.empty else None
@@ -143,47 +147,35 @@ st.header('📊 요약 통계')
 total_players = len(df)
 pending_players_count = (df['분류'] == '평가유예').sum()
 valid_players_count = total_players - pending_players_count
-
 tier_distribution = df.groupby(['현재 티어', '분류']).size().unstack(fill_value=0)
 tier_distribution = tier_distribution.sort_index()
 tier_distribution.index = tier_distribution.index.astype(int).astype(str) + "티어"
-
 col1, col2 = st.columns([1, 2])
 with col1:
     st.write("#### 전체 인원 현황")
     st.markdown(f"##### 총 플레이어: **{total_players}**명")
     st.markdown(f"##### 유효 플레이어: **{valid_players_count}**명")
     st.markdown(f"##### 평가유예 플레이어: **{pending_players_count}**명")
-
 with col2:
     st.write("#### 티어별 인원 분포")
-    
-    # 누적 막대그래프 생성
+    light_colors = px.colors.qualitative.Pastel
+    color_map = {tier: color for tier, color in zip(sorted(tier_distribution.index.unique()), light_colors)}
     fig = px.bar(
-        tier_distribution,
-        x=tier_distribution.index,
-        y=['유효', '평가유예'],
+        tier_distribution, x=tier_distribution.index, y=['유효', '평가유예'],
         color_discrete_map={'유효': '#636EFA', '평가유예': 'lightgrey'},
-        labels={'value': '인원 수', 'x': '티어', 'variable': '분류'}
+        labels={'value': '인원 수', 'x': '티어', 'variable': '분류'},
+        text='인원 수'
     )
-
-    # 그래프 디자인 세부 조정
+    fig.update_traces(
+        texttemplate='%{text}명', textposition='outside', textfont=dict(color='black', size=12)
+    )
     fig.update_layout(
-        title_text='<b>티어별 인원 분포 (유효/평가유예)</b>',
-        title_x=0.5,
-        xaxis_title="",
-        yaxis_title="",
-        barmode='stack',
-        legend_title_text='분류',
-        yaxis=dict(visible=False)
+        title_text='<b>티어별 인원 분포 (유효/평가유예)</b>', title_x=0.5,
+        xaxis_title="", yaxis_title="", barmode='stack',
+        legend_title_text='분류', yaxis=dict(visible=False)
     )
     fig.update_xaxes(
-        type='category',
-        tickangle=0,
-        tickfont=dict(color='black', size=12)
+        type='category', tickangle=0, tickfont=dict(color='black', size=12)
     )
-    
     config = {'staticPlot': True}
     st.plotly_chart(fig, use_container_width=True, config=config)
-
- 
