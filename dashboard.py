@@ -136,8 +136,12 @@ total_players = len(df)
 tier_distribution = df['현재 티어'].value_counts().sort_index().reset_index()
 tier_distribution.columns = ['티어', '인원 수'] 
 
-st.metric("총 분석 인원", f"{total_players} 명")
-st.write(" ")
-st.write("#### 티어별 인원 분포")
-st.dataframe(tier_distribution, use_container_width=True, hide_index=True)
- 
+col1, col2 = st.columns([1, 2]) # 왼쪽 1, 오른쪽 2 비율로 공간 분할
+
+with col1:
+    st.metric("총 분석 인원", f"{total_players} 명")
+
+with col2:
+    st.write("#### 티어별 인원 분포")
+    # 바 차트로 변경하여 시각화 개선
+    st.bar_chart(tier_distribution.set_index('티어'))
