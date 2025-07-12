@@ -223,7 +223,7 @@ with col2:
     
     fig.update_layout(
         title_text='<b>티어별 인원 분포</b>', 
-        title_x=3.0,
+        title_x=1.2,
         xaxis_title="",
         yaxis_title="",
         barmode='stack',
