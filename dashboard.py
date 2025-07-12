@@ -227,16 +227,16 @@ with col3:
     <div style="background-color: #e6f3ff; border-left: 5px solid #1a8cff; padding: 10px; border-radius: 5px; margin: 10px 0;">
         <ul style="list-style-type: none; padding-left: 0;">
             <li style="margin-bottom: 10px;">
-                <strong>이레귤러</strong>: 특정상황에서 티어 내 강자를 의미합니다.<br>
+                <strong>이레귤러</strong>: 특정상황에서 티어 내 강자를 의미<br>
                 <span style="font-size: 0.9em;">(티어 내 순위와는 무관)</span>
             </li>
             <li style="margin-bottom: 10px;">
-                <strong>클러치</strong>: 스폰 게임 대비 중요 경기 기대 승률을 나타냅니다.<br>
+                <strong>클러치</strong>: 스폰 게임 대비 중요 경기 기대 승률<br>
                 <span style="font-size: 0.9em;">(높을 수록 큰 경기에 강함)</span>
             </li>
             <li>
-                <strong>표리부동</strong>: wwe/ufc 비율을 나타냅니다.<br>
-                <span style="font-size: 0.9em;">(높을 수록 변수대처 능력이 떨어지거나, 빌드수행력이 떨어짐)</span>
+                <strong>표리부동</strong>: wwe/ufc 비율<br>
+                <span style="font-size: 0.8em;">(높을 수록 변수대처 능력이 떨어지거나, 빌드수행력이 떨어짐)</span>
             </li>
         </ul>
     </div>
