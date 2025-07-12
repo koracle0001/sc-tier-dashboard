@@ -83,19 +83,21 @@ highest_hypocrisy_player = df.loc[df['표리부동'].idxmax()]
 
 same_tier_filtered_df = df[df['동티어_경기수'] >= 40]
 highest_same_tier_wr_player = same_tier_filtered_df.loc[same_tier_filtered_df['동티어 승률_numeric'].idxmax()] if not same_tier_filtered_df.empty else None
-highest_higher_tier_wr_player = df.loc[df['상위티어 승률_numeric'].idxmax()]
-highest_lower_tier_wr_player = df.loc[df['하위티어 승률_numeric'].idxmax()]
+higher_tier_filtered_df = df[df['상위티어_경기수'] >= 20]
+highest_higher_tier_wr_player = higher_tier_filtered_df.loc[higher_tier_filtered_df['상위티어 승률_numeric'].idxmax()] if not higher_tier_filtered_df.empty else None
+lower_tier_filtered_df = df[df['하위티어_경기수'] >= 20]
+highest_lower_tier_wr_player = lower_tier_filtered_df.loc[lower_tier_filtered_df['하위티어 승률_numeric'].idxmax()] if not lower_tier_filtered_df.empty else None
 
 col1, col2, col3 = st.columns(3, gap="large")
 
 with col1:
     st.markdown("#### 🚀 티어 변동")
-    st.write("**승급**")
+    st.markdown("##### 승급")
     st.text(format_player_list_by_tier(promoted_df, 'promotion'))
-    st.write("\n**강등**")
+    st.markdown("##### 강등")
     st.text(format_player_list_by_tier(demoted_df, 'promotion'))
     if '상태' in df.columns:
-        st.write("\n**이레귤러**")
+        st.markdown("##### 이레귤러")
         st.text(format_player_list_by_tier(irregular_df, 'irregular'))
 
 with col2:
@@ -106,11 +108,18 @@ with col2:
     else:
         st.markdown("**동티어(40전 이상)**: 해당 없음 (40경기 이상자 없음)")
 
-    p = highest_higher_tier_wr_player
-    st.markdown(f"**상위티어**: **{int(p['현재 티어'])}티어** {p['이름']} ({p['상위티어 승률']})")
-    p = highest_lower_tier_wr_player
-    st.markdown(f"**하위티어**: **{int(p['현재 티어'])}티어** {p['이름']} ({p['하위티어 승률']})")
+    if highest_higher_tier_wr_player is not None:
+        p = highest_higher_tier_wr_player
+        st.markdown(f"**상위티어(20전 이상)**: **{int(p['현재 티어'])}티어** {p['이름']} ({p['상위티어 승률']})")
+    else:
+        st.markdown("**상위티어(20전 이상)**: 해당 없음 (20경기 이상자 없음)")
 
+    if highest_lower_tier_wr_player is not None:
+        p = highest_lower_tier_wr_player
+        st.markdown(f"**하위티어(20전 이상)**: **{int(p['현재 티어'])}티어** {p['이름']} ({p['하위티어 승률']})")
+    else:
+        st.markdown("**하위티어(20전 이상)**: 해당 없음 (20경기 이상자 없음)")
+        
 with col3:
     st.markdown("#### 🎯 세부 지표")
     p = most_matches_player
