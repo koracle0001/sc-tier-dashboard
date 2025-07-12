@@ -63,7 +63,7 @@ def classify_player(row):
 # --- 대시보드 제목 설정 ---
 st.title('⭐ 스타크래프트 여캠 밸런스 티어표')
 st.markdown("""
-<div style="text-align: left; color: black;">
+<div style="text-align: left;">
     <p style="font-size: 1.1em; margin-bottom: 0;"><b>데이터 갱신일: 2025-07-12</b></p>
     <p style="margin-bottom: 0.1em;">평가기간: 2025-05-24 ~ 2025-07-16</p>
     <p style="font-size: 0.9em;">제작자: UnKn0wn1</p>
@@ -307,20 +307,25 @@ with col2_sum:
     max_y_value = tier_distribution.sum(axis=1).max()
 
     fig.update_layout(
-        xaxis_title="", yaxis_title="", barmode='stack',
-        height=500, margin=dict(t=20),
-        paper_bgcolor='white',
-        plot_bgcolor='white',
-        legend=dict(font=dict(color="black")),  
-        title_font_color="black" 
+        xaxis_title="", 
+        yaxis_title="", 
+        barmode='stack',
+        legend_title_text='분류', 
+        height=500, 
+        margin=dict(t=20),
+        paper_bgcolor='white',  
+        plot_bgcolor='white',   
+        font=dict(color="black")  
     )
     
     fig.update_xaxes(
-        type='category', tickangle=0, tickfont=dict(color="black", size=12)  
+        type='category', 
+        tickangle=0, 
+        tickfont=dict(size=12) 
     )
     fig.update_yaxes(
         visible=False, 
-        range=[0, max_y_value * 1.25] 
+        range=[0, max_y_value * 1.25] # 텍스트 공간을 더 넉넉하게 25% 확보
     )
     
     config = {'staticPlot': True}
