@@ -164,7 +164,7 @@ with col1:
         st.text(format_player_list_by_tier(irregular_df, 'irregular'))
 
 with col2:
-    st.markdown("#### 📋 세부 지표 분석 (유효 플레이어 기준!!)")
+    st.markdown("#### 📋 세부 지표 분석 (유효 플레이어 기준)")
     # --- 최고 승률 Top 5 ---
     st.markdown("##### 🏆 최고 승률 Top 5")
     sub_col1, sub_col2, sub_col3 = st.columns(3)
@@ -174,10 +174,13 @@ with col2:
             if dataframe.empty:
                 st.markdown("<p style='font-size: 0.9em; color: grey;'>해당 없음</p>", unsafe_allow_html=True)
             for i, (_, row) in enumerate(dataframe.iterrows()):
+                win_rate_col = f'{stat_name_eng} 승률_numeric'
+                match_count_col = f'{stat_name_eng}_경기수'
+
                 st.markdown(f"""
                 <div style="line-height: 1.2; margin-bottom: 8px; font-size: 0.9em;">
                     {i+1}. {int(row['현재 티어'])}티어 {row['이름']}<br>
-                    <span style='font-size:0.9em; color:grey;'>({int(row[f'{stat_name_eng}_경기수'])}게임, {row[f'{stat_name_eng}_승률_numeric']:.1f}%)</span>
+                    <span style='font-size:0.9em; color:grey;'>({int(row[match_count_col])}게임, {row[win_rate_col]:.1f}%)</span>
                 </div>
                 """, unsafe_allow_html=True)
     
