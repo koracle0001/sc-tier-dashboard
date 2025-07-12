@@ -137,38 +137,46 @@ st.header('📊 요약 통계')
 total_players = len(df)
 tier_distribution = df['현재 티어'].value_counts().sort_index().reset_index()
 tier_distribution.columns = ['티어', '인원 수'] 
+tier_distribution['티어'] = tier_distribution['티어'].astype(int).astype(str) + "티어"
 
-col1, col2 = st.columns([1, 2]) # 왼쪽 1, 오른쪽 2 비율로 공간 분할
+col1, col2 = st.columns([1, 2]) 
 
 with col1:
     st.metric("총 분석 인원", f"{total_players} 명")
 
 with col2:
     light_colors = px.colors.qualitative.Pastel
+    color_map = {tier: color for tier, color in zip(sorted(tier_distribution['티어'].unique()), light_colors)}
+
     fig = px.bar(
         tier_distribution, 
         x='티어', 
         y='인원 수',
-        color='티어', # 티어별로 다른 색상 적용
-        color_discrete_sequence=light_colors # 미리 정의한 옅은 색상 사용
+        color='티어',
+        color_discrete_map=color_map, 
+        text='인원 수'  
+    )
+
+    fig.update_traces(
+        texttemplate='%{text}명', 
+        textposition='outside',
+        textfont=dict(color='black', size=12)
     )
 
     fig.update_layout(
-        title_text='<b>티어별 인원 분포</b>',  # 제목을 굵게, 중앙 정렬
+        title_text='<b>티어별 인원 분포</b>',
         title_x=0.5,
-        xaxis_title="",  # x축 제목 제거
-        yaxis_title="인원 수 (명)", # y축 제목 설정
-        showlegend=False # 범례 숨기기
-    )
-
-    fig.update_xaxes(
-        tickangle=0, # x축 글씨를 바로 세움
-        tickfont=dict(color='black', size=12) # x축 글씨 색상 및 크기
+        xaxis_title="",
+        yaxis_title="",  
+        showlegend=False,
+        yaxis=dict(visible=False)  
     )
     
-    fig.update_yaxes(
-        tickfont=dict(color='black', size=12) # y축 글씨 색상 및 크기
+    fig.update_xaxes(
+        type='category',  
+        tickangle=0,
+        tickfont=dict(color='black', size=14)  
     )
 
-    # 4. Streamlit에 Plotly 차트 표시
-    st.plotly_chart(fig, use_container_width=True)
+    config = {'staticPlot': True}
+    st.plotly_chart(fig, use_container_width=True, config=config)
