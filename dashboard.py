@@ -135,14 +135,14 @@ highest_clutch_player = valid_players_df.loc[valid_players_df['클러치_numeric
 highest_hypocrisy_player = valid_players_df.loc[valid_players_df['표리부동_numeric_safe'].idxmax()]
 
 same_tier_filtered_df = valid_players_df[valid_players_df['동티어_경기수'] >= 40]
-higher_tier_filtered_df = valid_players_df[valid_players_df['상위티어_경기수'] >= 20]
-lower_tier_filtered_df = valid_players_df[valid_players_df['하위티어_경기수'] >= 20]
-
 top5_highest_same = same_tier_filtered_df.sort_values(by='동티어 승률_numeric', ascending=False).head(5)
-top5_lowest_same = same_tier_filtered_df.sort_values(by='동티어 승률_numeric', ascending=True).head(5)
+higher_tier_filtered_df = valid_players_df[valid_players_df['상위티어_경기수'] >= 20]
 top5_highest_higher = higher_tier_filtered_df.sort_values(by='상위티어 승률_numeric', ascending=False).head(5)
-top5_lowest_higher = higher_tier_filtered_df[higher_tier_filtered_df['상위티어 승률_numeric'] > 0].sort_values(by='상위티어 승률_numeric', ascending=True).head(5)
+lower_tier_filtered_df = valid_players_df[valid_players_df['하위티어_경기수'] >= 20]
 top5_highest_lower = lower_tier_filtered_df.sort_values(by='하위티어 승률_numeric', ascending=False).head(5)
+
+top5_lowest_same = same_tier_filtered_df.sort_values(by='동티어 승률_numeric', ascending=True).head(5)
+top5_lowest_higher = higher_tier_filtered_df[higher_tier_filtered_df['상위티어 승률_numeric'] > 0].sort_values(by='상위티어 승률_numeric', ascending=True).head(5)
 top5_lowest_lower = lower_tier_filtered_df[lower_tier_filtered_df['하위티어 승률_numeric'] > 0].sort_values(by='하위티어 승률_numeric', ascending=True).head(5)
 
 metrics_players_df = valid_players_df[~valid_players_df['현재 티어'].isin([0, 1, 9])]
@@ -166,47 +166,64 @@ with col1:
 with col2:
     st.markdown("#### 📋 세부 지표 분석 (유효 플레이어 기준)")
     # --- 최고 승률 Top 5 ---
-    st.markdown("🏆 **최고 승률 Top 5**")
-    sub_col1, sub_col2, sub_col3 = st.columns(3)
-    with sub_col1:
-        st.markdown("**동티어(40전+)**")
-        if top5_highest_same.empty:
-            st.write("-")
-        for i, (_, row) in enumerate(top5_highest_same.iterrows()):
-            st.markdown(f"{i+1}. {int(row['현재 티어'])}티어 {row['이름']} <br><span style='font-size:0.9em; color:grey;'>({int(row['동티어_경기수'])}게임, {row['동티어 승률_numeric']:.1f}%)</span>", unsafe_allow_html=True)
-    with sub_col2:
-        st.markdown("**상위티어(20전+)**")
-        if top5_highest_higher.empty:
-            st.write("-")
-        for i, (_, row) in enumerate(top5_highest_higher.iterrows()):
-            st.markdown(f"{i+1}. {int(row['현재 티어'])}티어 {row['이름']} <br><span style='font-size:0.9em; color:grey;'>({int(row['상위티어_경기수'])}게임, {row['상위티어 승률_numeric']:.1f}%)</span>", unsafe_allow_html=True)
-    with sub_col3:
-        st.markdown("**하위티어(20전+)**")
-        if top5_highest_lower.empty:
-            st.write("-")
-        for i, (_, row) in enumerate(top5_highest_lower.iterrows()):
-            st.markdown(f"{i+1}. {int(row['현재 티어'])}티어 {row['이름']} <br><span style='font-size:0.9em; color:grey;'>({int(row['하위티어_경기수'])}게임, {row['하위티어 승률_numeric']:.1f}%)</span>", unsafe_allow_html=True)
-    
-    st.markdown("💀 **최저 승률 Top 5**")
-    sub_col1, sub_col2, sub_col3 = st.columns(3)
-    with sub_col1:
-        st.markdown("**동티어(40전+)**")
-        if top5_lowest_same.empty:
-            st.write("-")
-        for i, (_, row) in enumerate(top5_lowest_same.iterrows()):
-            st.markdown(f"{i+1}. {int(row['현재 티어'])}티어 {row['이름']} <br><span style='font-size:0.9em; color:grey;'>({int(row['동티어_경기수'])}게임, {row['동티어 승률_numeric']:.1f}%)</span>", unsafe_allow_html=True)
-    with sub_col2:
-        st.markdown("**상위티어(20전+)**")
-        if top5_lowest_higher.empty:
-            st.write("-")
-        for i, (_, row) in enumerate(top5_lowest_higher.iterrows()):
-            st.markdown(f"{i+1}. {int(row['현재 티어'])}티어 {row['이름']} <br><span style='font-size:0.9em; color:grey;'>({int(row['상위티어_경기수'])}게임, {p['상위티어 승률_numeric']:.1f}%)</span>", unsafe_allow_html=True)
-    with sub_col3:
-        st.markdown("**하위티어(20전+)**")
-        if top5_lowest_lower.empty:
-            st.write("-")
-        for i, (_, row) in enumerate(top5_lowest_lower.iterrows()):
-            st.markdown(f"{i+1}. {int(row['현재 티어'])}티어 {row['이름']} <br><span style='font-size:0.9em; color:grey;'>({int(row['하위티어_경기수'])}게임, {row['하위티어 승률_numeric']:.1f}%)</span>", unsafe_allow_html=True)
+    st.markdown("##### 🏆 최고 승률 Top 5")
+    # 헤더
+    h_col1, h_col2, h_col3 = st.columns(3)
+    h_col1.markdown("<p style='font-size:0.9em; font-weight:bold;'>동티어(40전+)</p>", unsafe_allow_html=True)
+    h_col2.markdown("<p style='font-size:0.9em; font-weight:bold;'>상위티어(20전+)</p>", unsafe_allow_html=True)
+    h_col3.markdown("<p style='font-size:0.9em; font-weight:bold;'>하위티어(20전+)</p>", unsafe_allow_html=True)
+    st.markdown("---")
+    # 랭킹
+    for i in range(5):
+        r_col1, r_col2, r_col3 = st.columns(3)
+        # 동티어
+        try:
+            p = top5_highest_same.iloc[i]
+            r_col1.markdown(f"**{i+1}.** {int(p['현재 티어'])}T {p['이름']} `({int(p['동티어_경기수'])}G, {p['동티어 승률_numeric']:.1f}%)`")
+        except IndexError:
+            r_col1.markdown(f"**{i+1}.** -")
+        # 상위티어
+        try:
+            p = top5_highest_higher.iloc[i]
+            r_col2.markdown(f"**{i+1}.** {int(p['현재 티어'])}T {p['이름']} `({int(p['상위티어_경기수'])}G, {p['상위티어 승률_numeric']:.1f}%)`")
+        except IndexError:
+            r_col2.markdown(f"**{i+1}.** -")
+        # 하위티어
+        try:
+            p = top5_highest_lower.iloc[i]
+            r_col3.markdown(f"**{i+1}.** {int(p['현재 티어'])}T {p['이름']} `({int(p['하위티어_경기수'])}G, {p['하위티어 승률_numeric']:.1f}%)`")
+        except IndexError:
+            r_col3.markdown(f"**{i+1}.** -")
+
+    # --- 최저 승률 ---
+    st.markdown("##### 💀 최저 승률 Top 5")
+    # 헤더
+    h_col1, h_col2, h_col3 = st.columns(3)
+    h_col1.markdown("<p style='font-size:0.9em; font-weight:bold;'>동티어(40전+)</p>", unsafe_allow_html=True)
+    h_col2.markdown("<p style='font-size:0.9em; font-weight:bold;'>상위티어(20전+)</p>", unsafe_allow_html=True)
+    h_col3.markdown("<p style='font-size:0.9em; font-weight:bold;'>하위티어(20전+)</p>", unsafe_allow_html=True)
+    st.markdown("---")
+    # 랭킹
+    for i in range(5):
+        r_col1, r_col2, r_col3 = st.columns(3)
+        # 동티어
+        try:
+            p = top5_lowest_same.iloc[i]
+            r_col1.markdown(f"**{i+1}.** {int(p['현재 티어'])}T {p['이름']} `({int(p['동티어_경기수'])}G, {p['동티어 승률_numeric']:.1f}%)`")
+        except IndexError:
+            r_col1.markdown(f"**{i+1}.** -")
+        # 상위티어
+        try:
+            p = top5_lowest_higher.iloc[i]
+            r_col2.markdown(f"**{i+1}.** {int(p['현재 티어'])}T {p['이름']} `({int(p['상위티어_경기수'])}G, {p['상위티어 승률_numeric']:.1f}%)`")
+        except IndexError:
+            r_col2.markdown(f"**{i+1}.** -")
+        # 하위티어
+        try:
+            p = top5_lowest_lower.iloc[i]
+            r_col3.markdown(f"**{i+1}.** {int(p['현재 티어'])}T {p['이름']} `({int(p['하위티어_경기수'])}G, {p['하위티어 승률_numeric']:.1f}%)`")
+        except IndexError:
+            r_col3.markdown(f"**{i+1}.** -")
 
     st.markdown("---")
     sub_col1, sub_col2, sub_col3 = st.columns(3)
