@@ -76,6 +76,11 @@ for col in ['동티어 승률', '상위티어 승률', '하위티어 승률']:
     df[f'{col.split(" ")[0]}_경기수'] = df[col].astype(str).str.extract(r'\((\d+)\s*게임\)').astype(float).fillna(0)
 df['분류'] = df.apply(classify_player, axis=1)
 
+status_map = {'유효': 0, '평가유예': 1, '비활성화': 2}
+df['정렬순서'] = df['분류'].map(status_map)
+
+df_sorted = df.sort_values(by=['정렬순서', '현재 티어'])
+
 st.header('밸런스 티어표')
 st.markdown("""
 <style>
@@ -91,8 +96,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # 화면에 표시할 최종 데이터프레임
-display_columns = [col for col in df.columns if not col.endswith(('_numeric', '_경기수', '분류'))]
-display_df = df[display_columns]
+display_columns = [col for col in df.columns if not col.endswith(('_numeric', '_경기수', '분류', '순서'))]
+display_df = df_sorted[display_columns]
 
 # 배경색과 숫자 서식만 Styler로 처리
 styled_df = display_df.style.apply(highlight_rows, axis=1) \
