@@ -81,14 +81,19 @@ display_columns = [col for col in df.columns if not col.endswith(('_numeric', '_
 display_df = df[display_columns]
 
 styled_df = display_df.style.apply(highlight_rows, axis=1) \
-                          .set_properties(**{'text-align': 'center'}) \
                           .format({
                               '클러치': lambda x: f'{x:.2f}' if isinstance(x, (int, float)) else x,
                               '표리부동': lambda x: f'{x:.2f}' if isinstance(x, (int, float)) else x
-                          })
-st.dataframe(styled_df, use_container_width=True)
+                          }) \
+                          .set_table_styles([
+                              dict(selector="th, td", props=[("text-align", "center")]),
+                              dict(selector="th:first-child", props=[("min-width", "100px")]),
+                              dict(selector="td:first-child", props=[("min-width", "100px")]),
+                          ])
 
-# --- 기간 내 주요 선수 ---
+st.markdown(styled_df.to_html(escape=False), unsafe_allow_html=True)
+
+# --- 기간 내 주요 이슈 ---
 st.divider()
 st.header('📈 평가기간 내 주요 이슈')
 
