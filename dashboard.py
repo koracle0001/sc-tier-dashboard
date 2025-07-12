@@ -149,7 +149,7 @@ top_5_matches = valid_players_df.sort_values(by='총 경기수_numeric_safe', as
 top_5_clutch = valid_players_df.sort_values(by='클러치_numeric_safe', ascending=False).head(5)
 top_5_hypocrisy = valid_players_df.sort_values(by='표리부동_numeric_safe', ascending=False).head(5)
 
-col1, col2, col3 = st.columns(3, gap="large")
+col1, col2, col3 = st.columns([1.5, 2, 2])
 
 with col1:
     st.markdown("#### ✒️ 티어 변동")
@@ -206,19 +206,12 @@ with col2:
     st.markdown("💀 **최저 승률**<br>" + "<br>".join([f"&nbsp;&nbsp;&nbsp;└ {text}" for text in lowest_win_rate_texts]), unsafe_allow_html=True)
 
     # 2. 나머지 세부 지표
-    st.markdown("💪 **최다 경기 Top 5**")
-    for i, (_, row) in enumerate(top_5_matches.iterrows()):
-        st.markdown(f"&nbsp;&nbsp;&nbsp;{i+1}. **{int(row['현재 티어'])}티어** {row['이름']} ({int(row['총 경기수'])} 경기)")
-    st.write("") #여백
-    
-    st.markdown("🎯 **최고 클러치 Top 5**")
-    for i, (_, row) in enumerate(top_5_clutch.iterrows()):
-        st.markdown(f"&nbsp;&nbsp;&nbsp;{i+1}. **{int(row['현재 티어'])}티어** {row['이름']} ({float(row['클러치']):.2f})")
-    st.write("") #여백
-    
-    st.markdown("🤔 **최고 표리부동 Top 5**")
-    for i, (_, row) in enumerate(top_5_hypocrisy.iterrows()):
-        st.markdown(f"&nbsp;&nbsp;&nbsp;{i+1}. **{int(row['현재 티어'])}티어** {row['이름']} ({float(row['표리부동']):.2f})")
+    def format_top5_list(df, col_name, format_str):
+        return [f"**{int(row['현재 티어'])}티어** {row['이름']} ({format_str.format(row[col_name])})" for _, row in df.iterrows()]
+
+    st.markdown("💪 **최다 경기 Top 5**<br>" + "<br>".join([f"&nbsp;&nbsp;&nbsp;{i+1}. {text}" for i, text in enumerate(format_top5_list(top_5_matches, '총 경기수', '{:d} 경기'))]), unsafe_allow_html=True)
+    st.markdown("🎯 **최고 클러치 Top 5**<br>" + "<br>".join([f"&nbsp;&nbsp;&nbsp;{i+1}. {text}" for i, text in enumerate(format_top5_list(top_5_clutch, '클러치', '{:.2f}'))]), unsafe_allow_html=True)
+    st.markdown("🤔 **최고 표리부동 Top 5**<br>" + "<br>".join([f"&nbsp;&nbsp;&nbsp;{i+1}. {text}" for i, text in enumerate(format_top5_list(top_5_hypocrisy, '표리부동', '{:.2f}'))]), unsafe_allow_html=True)
 
 with col3:
     st.markdown("#### ℹ️ 지표 설명")
