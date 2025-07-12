@@ -235,7 +235,7 @@ with col3:
                 <span style="font-size: 0.9em;">(높을 수록 큰 경기에 강함)</span>
             </li>
             <li style="margin-bottom: 8px;">
-                <strong>로직 신뢰도 등급</strong>: 판정 결과의 유효 신뢰도<br>
+                <strong>로직 신뢰도 등급</strong>: 판정 결과의 유효 지속성<br>
                 <span style="font-size: 0.9em;">(플레이어의 점수에는 일절 영향을 주지 않음)</span>
             </li>
             <li>
@@ -251,8 +251,8 @@ with col3:
     <div style="background-color: #f0fff0; border-left: 5px solid #28a745; padding: 10px; border-radius: 5px; margin: 5px 0;">
         <h5 style="margin-top: 0; margin-bottom: 8px; font-weight: bold;">(8월 내 적용예정, 테스트 중)</h5>
         <ul style="list-style-type: none; padding-left: 5px; margin-bottom: 0;">
-            <li style="margin-bottom: 4px;">- 특정 플레이어의 상세로그 공개에 관한 프로세스를 준비중입니다.</li>
-            <li>- 요청이 많은 순서대로 공개할 수 있도록 하겠습니다.</li>
+            <li style="margin-bottom: 4px;"> 특정 플레이어의 상세로그 공개에 관한 프로세스를 준비중입니다.</li>
+            <li> 요청이 많은 순서대로 공개할 수 있도록 하겠습니다.</li>
         </ul>
     </div>
     """, unsafe_allow_html=True)
