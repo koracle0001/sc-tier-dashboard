@@ -136,6 +136,10 @@ highest_higher_tier_wr_player = higher_tier_filtered_df.loc[higher_tier_filtered
 lower_tier_filtered_df = valid_players_df[valid_players_df['하위티어_경기수'] >= 20]
 highest_lower_tier_wr_player = lower_tier_filtered_df.loc[lower_tier_filtered_df['하위티어 승률_numeric'].idxmax()] if not lower_tier_filtered_df.empty else None
 
+lowest_same_tier_wr_player = same_tier_filtered_df.loc[same_tier_filtered_df['동티어 승률_numeric'].idxmin()] if not same_tier_filtered_df.empty else None
+lowest_higher_tier_wr_player = higher_tier_filtered_df.loc[higher_tier_filtered_df['상위티어 승률_numeric'].idxmin()] if not higher_tier_filtered_df.empty else None
+lowest_lower_tier_wr_player = lower_tier_filtered_df.loc[lower_tier_filtered_df['하위티어 승률_numeric'].idxmin()] if not lower_tier_filtered_df.empty else None
+
 col1, col2, col3 = st.columns(3, gap="large")
 
 with col1:
