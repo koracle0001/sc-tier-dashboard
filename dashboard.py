@@ -61,8 +61,8 @@ def classify_player(row):
 # --------------------
 
 # --- 대시보드 제목 설정 ---
+st.markdown("##### 평가기간: 2025-05-24 ~ 2025-07-16")
 st.title('⭐ 스타크래프트 여캠 밸런스 티어표 및 분석로그')
-st.caption(f"데이터 기준일: 2025-07-12")  
 
 # --- 데이터 파일 불러오기 ---
 try:
@@ -143,7 +143,7 @@ lowest_lower_tier_wr_player = lower_tier_filtered_df.loc[lower_tier_filtered_df[
 col1, col2, col3 = st.columns(3, gap="large")
 
 with col1:
-    st.markdown("####  티어 변동")
+    st.markdown("#### ✒️ 티어 변동")
     st.markdown("##### 📈 승급")
     st.text(format_player_list_by_tier(promoted_df, 'promotion'))
     st.markdown("##### 📉 강등")
@@ -153,7 +153,7 @@ with col1:
         st.text(format_player_list_by_tier(irregular_df, 'irregular'))
 
 with col2:
-    st.markdown("#### 📋 세부 지표 분석")
+    st.markdown("#### 📋 세부 지표 분석 (유효 플레이어 기준)")
     win_rate_texts = []
     if highest_same_tier_wr_player is not None:
         p = highest_same_tier_wr_player
@@ -285,5 +285,12 @@ with col2:
     config = {'staticPlot': True}
     st.plotly_chart(fig, use_container_width=True, config=config)
 
-
+# --- 페이지 하단 정보 ---
+st.divider()
+st.markdown("""
+<div style="text-align: right;">
+    <p style="font-size: 16px; color: black; margin-bottom: 0;"><b>데이터 갱신일: 2025-07-16</b></p>
+    <p style="font-size: 14px; color: grey;">제작자: UnKn0wn1</p>
+</div>
+""", unsafe_allow_html=True)
 
