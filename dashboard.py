@@ -107,7 +107,7 @@ st.dataframe(styled_df, use_container_width=True, hide_index=True)
 
 # --- 기간 내 주요 이슈 ---
 st.divider()
-st.header('📈 평가기간 내 주요 이슈')
+st.header('평가기간 내 주요 이슈')
 
 # 데이터 추출
 promoted_df = df[df['티어 변동'].isin(['승급'])]
@@ -133,7 +133,7 @@ highest_lower_tier_wr_player = lower_tier_filtered_df.loc[lower_tier_filtered_df
 col1, col2, col3 = st.columns(3, gap="large")
 
 with col1:
-    st.markdown("#### 🚀 티어 변동")
+    st.markdown("#### 📈 티어 변동")
     st.markdown("##### 승급")
     st.text(format_player_list_by_tier(promoted_df, 'promotion'))
     st.markdown("##### 강등")
