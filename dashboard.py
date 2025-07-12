@@ -85,9 +85,9 @@ promoted_df = df[df['티어 변동'].isin(['승급'])]
 demoted_df = df[df['티어 변동'] == '강등']
 irregular_df = df[df['상태'] == '이레귤러'] if '상태' in df.columns else pd.DataFrame()
 
-most_matches_player = df.loc[df['총 경기수'].idxmax()]
-highest_clutch_player = df.loc[df['클러치'].idxmax()]
-highest_hypocrisy_player = df.loc[df['표리부동'].idxmax()]
+most_matches_player = df.loc[df['총 경기수'].astype(int).idxmax()]
+highest_clutch_player = df.loc[df['클러치'].replace('-', -999).astype(float).idxmax()]
+highest_hypocrisy_player = df.loc[df['표리부동'].replace('-', -999).astype(float).idxmax()]
 
 same_tier_filtered_df = df[df['동티어_경기수'] >= 40]
 highest_same_tier_wr_player = same_tier_filtered_df.loc[same_tier_filtered_df['동티어 승률_numeric'].idxmax()] if not same_tier_filtered_df.empty else None
@@ -133,10 +133,8 @@ with col3:
     p = most_matches_player
     st.markdown(f"**최다 경기**: **{int(p['현재 티어'])}티어** {p['이름']} ({p['총 경기수']} 경기)")
     p = highest_clutch_player
-    # [오류 수정] 값을 float으로 변환 후 서식 적용
     st.markdown(f"**최고 클러치**: **{int(p['현재 티어'])}티어** {p['이름']} ({float(p['클러치']):.2f})")
     p = highest_hypocrisy_player
-    # [오류 수정] 값을 float으로 변환 후 서식 적용
     st.markdown(f"**최고 표리부동**: **{int(p['현재 티어'])}티어** {p['이름']} ({float(p['표리부동']):.2f})")
 
 # --- 요약 통계 ---
