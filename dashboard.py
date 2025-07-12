@@ -192,6 +192,13 @@ tier_distribution = tier_distribution.reindex(columns=[col for col in desired_or
 tier_distribution = tier_distribution.sort_index()
 tier_distribution.index = tier_distribution.index.astype(int).astype(str) + "티어"
 
+max_pending_tier_text = "해당 없음"
+if '평가유예' in tier_distribution.columns and tier_distribution['평가유예'].sum() > 0:
+    max_pending_count = tier_distribution['평가유예'].max()
+    if max_pending_count > 0:
+        top_pending_tiers = tier_distribution[tier_distribution['평가유예'] == max_pending_count].index.tolist()
+        max_pending_tier_text = f"{', '.join(top_pending_tiers)} ({int(max_pending_count)}명)"
+
 col1, col2 = st.columns([1, 2])
 with col1:
     st.write("#### 전체 인원 현황")
@@ -199,8 +206,10 @@ with col1:
     st.markdown(f"##### 유효 플레이어: **{valid_players_count}**명")
     st.markdown(f"##### 평가유예 플레이어: **{pending_players_count}**명")
     st.markdown(f"##### 비활성화 플레이어: **{inactive_players_count}**명")
+    st.markdown(f"##### 최다 유예 티어: **{max_pending_tier_text}**")
 
 with col2:
+    st.write("#### 티어별 인원 분포")
 
     color_map = {'유효': '#636EFA', '평가유예': 'lightgrey', '비활성화': 'black'}
     
@@ -215,15 +224,13 @@ with col2:
     
     fig.update_traces(
         textposition='outside',  
-        textfont=dict(color='black'),  
+        textfont=dict(color='black', size=14),  
         selector=dict(type='bar')
     )
     # 값이 0인 막대에서는 텍스트를 표시하지 않음
     fig.for_each_trace(lambda t: t.update(texttemplate = ["" if v == 0 else f"{v:,.0f}" for v in t.y]))
     
     fig.update_layout(
-        title_text='<b>티어별 인원 분포</b>', 
-        title_x=0.5,
         xaxis_title="",
         yaxis_title="",
         barmode='stack',
