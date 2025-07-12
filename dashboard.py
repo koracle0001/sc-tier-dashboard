@@ -235,6 +235,10 @@ with col3:
                 <span style="font-size: 0.9em;">(높을 수록 큰 경기에 강함)</span>
             </li>
             <li>
+                <strong>로직 신뢰도 등급</strong>: 판정 결과를 해석하기 위한 해설 도구<br>
+                <span style="font-size: 0.9em;">(플레이어의 점수에는 일절 영향을 주지 않음)</span>
+            </li>
+            <li>
                 <strong>표리부동</strong>: wwe/ufc 비율<br>
                 <span style="font-size: 0.8em;">(높을 수록 변수대처 능력이 떨어지거나, 빌드수행력이 떨어짐)</span>
             </li>
