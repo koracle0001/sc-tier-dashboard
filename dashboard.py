@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 from collections import defaultdict
+import plotly.express as px 
+
 
 # --- 페이지 기본 설정 (넓은 레이아웃 사용) ---
 st.set_page_config(layout="wide", page_title="스타 여캠 밸런스 티어표")
@@ -142,6 +144,31 @@ with col1:
     st.metric("총 분석 인원", f"{total_players} 명")
 
 with col2:
-    st.write("#### 티어별 인원 분포")
-    # 바 차트로 변경하여 시각화 개선
-    st.bar_chart(tier_distribution.set_index('티어'))
+    light_colors = px.colors.qualitative.Pastel
+    fig = px.bar(
+        tier_distribution, 
+        x='티어', 
+        y='인원 수',
+        color='티어', # 티어별로 다른 색상 적용
+        color_discrete_sequence=light_colors # 미리 정의한 옅은 색상 사용
+    )
+
+    fig.update_layout(
+        title_text='<b>티어별 인원 분포</b>',  # 제목을 굵게, 중앙 정렬
+        title_x=0.5,
+        xaxis_title="",  # x축 제목 제거
+        yaxis_title="인원 수 (명)", # y축 제목 설정
+        showlegend=False # 범례 숨기기
+    )
+
+    fig.update_xaxes(
+        tickangle=0, # x축 글씨를 바로 세움
+        tickfont=dict(color='black', size=12) # x축 글씨 색상 및 크기
+    )
+    
+    fig.update_yaxes(
+        tickfont=dict(color='black', size=12) # y축 글씨 색상 및 크기
+    )
+
+    # 4. Streamlit에 Plotly 차트 표시
+    st.plotly_chart(fig, use_container_width=True)
