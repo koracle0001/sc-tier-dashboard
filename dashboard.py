@@ -88,15 +88,16 @@ st.markdown("""
 .stDataFrame th, .stDataFrame td {
     text-align: center !important;
 }
-/* 데이터프레임의 첫 번째 열('이름' 컬럼)에 최소 너비를 지정하여 잘림 방지 */
+/* 데이터프레임의 첫 번째 열('이름' 컬럼) 스타일 지정 */
 .stDataFrame th:nth-child(1), .stDataFrame td:nth-child(1) {
-    min-width: 120px !important;
+    min-width: 150px !important;  /* 최소 너비를 더 넉넉하게 설정 */
+    white-space: nowrap;        /* 텍스트 줄바꿈 방지 */
 }
 </style>
 """, unsafe_allow_html=True)
 
 # 화면에 표시할 최종 데이터프레임
-display_columns = [col for col in df.columns if not col.endswith(('_numeric', '_경기수', '분류', '순서'))]
+display_columns = [col for col in df.columns if not col.endswith(('_numeric', '_경기수', '분류'))]
 display_df = df_sorted[display_columns]
 
 # 배경색과 숫자 서식만 Styler로 처리
