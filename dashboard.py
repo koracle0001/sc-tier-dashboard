@@ -56,6 +56,50 @@ def classify_player(row):
     else:
         return '유효'
 
+def create_win_rate_table(title_icon, title_text, top5_dataframes):
+
+    df_same, df_higher, df_lower = top5_dataframes
+
+    # HTML 테이블 시작
+    html = f"""
+    <p style="font-size: 1.2em; font-weight: bold;">{title_icon} {title_text}</p>
+    <table class="custom-table">
+        <thead>
+            <tr>
+                <th style="width: 5%;">#</th>
+                <th style="width: 31.6%;">동티어 승률 (40전 이상)</th>
+                <th style="width: 31.6%;">상위티어 승률 (20전 이상)</th>
+                <th style="width: 31.6%;">하위티어 승률 (20전 이상)</th>
+            </tr>
+        </thead>
+        <tbody>
+    """
+    # 1위부터 5위까지 행 생성
+    for i in range(5):
+        html += f"<tr><td><b>{i+1}</b></td>"
+        # 동티어
+        try:
+            p = df_same.iloc[i]
+            html += f"<td>{int(p['현재 티어'])}티어 {p['이름']}<br><span style='font-size:0.9em; color:grey;'>({int(p['동티어_경기수'])}게임, {p['동티어 승률_numeric']:.1f}%)</span></td>"
+        except IndexError:
+            html += "<td>-</td>"
+        # 상위티어
+        try:
+            p = df_higher.iloc[i]
+            html += f"<td>{int(p['현재 티어'])}티어 {p['이름']}<br><span style='font-size:0.9em; color:grey;'>({int(p['상위티어_경기수'])}게임, {p['상위티어 승률_numeric']:.1f}%)</span></td>"
+        except IndexError:
+            html += "<td>-</td>"
+        # 하위티어
+        try:
+            p = df_lower.iloc[i]
+            html += f"<td>{int(p['현재 티어'])}티어 {p['이름']}<br><span style='font-size:0.9em; color:grey;'>({int(p['하위티어_경기수'])}게임, {p['하위티어 승률_numeric']:.1f}%)</span></td>"
+        except IndexError:
+            html += "<td>-</td>"
+        html += "</tr>"
+        
+    html += "</tbody></table>"
+    return html
+
 # --------------------
 # 메인 대시보드
 # --------------------
@@ -89,14 +133,24 @@ df_sorted = df.sort_values(by=['정렬순서', '현재 티어'])
 st.header('밸런스 티어표')
 st.markdown("""
 <style>
-/* 데이터프레임의 모든 셀(td)과 헤더(th)를 가운데 정렬 */
 .stDataFrame th, .stDataFrame td {
     text-align: center !important;
 }
-/* 데이터프레임의 첫 번째 열('이름' 컬럼) 스타일 지정 */
 .stDataFrame th:nth-child(1), .stDataFrame td:nth-child(1) {
-    min-width: 150px !important;  /* 최소 너비를 더 넉넉하게 설정 */
-    white-space: nowrap;        /* 텍스트 줄바꿈 방지 */
+    min-width: 150px !important;
+    white-space: nowrap;
+}
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.custom-table th, .custom-table td {
+    border: 1px solid #c9c9c9;
+    padding: 8px;
+    text-align: center;
+}
+.custom-table th {
+    background-color: #f0f2f6;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -105,14 +159,12 @@ st.markdown("""
 display_columns = [col for col in df.columns if not col.endswith(('_numeric', '_경기수', '분류', '순서'))]
 display_df = df_sorted[display_columns]
 
-# 배경색과 숫자 서식만 Styler로 처리
 styled_df = display_df.style.apply(highlight_rows, axis=1) \
                           .format({
                               '클러치': lambda x: f'{x:.2f}' if isinstance(x, (int, float)) else x,
                               '표리부동': lambda x: f'{x:.2f}' if isinstance(x, (int, float)) else x
                           })
 
-# 최종적으로 st.dataframe으로 표를 표시
 st.dataframe(styled_df, use_container_width=True, hide_index=True)
 
 
@@ -135,15 +187,15 @@ highest_clutch_player = valid_players_df.loc[valid_players_df['클러치_numeric
 highest_hypocrisy_player = valid_players_df.loc[valid_players_df['표리부동_numeric_safe'].idxmax()]
 
 same_tier_filtered_df = valid_players_df[valid_players_df['동티어_경기수'] >= 40]
-highest_same_tier_wr_player = same_tier_filtered_df.loc[same_tier_filtered_df['동티어 승률_numeric'].idxmax()] if not same_tier_filtered_df.empty else None
 higher_tier_filtered_df = valid_players_df[valid_players_df['상위티어_경기수'] >= 20]
-highest_higher_tier_wr_player = higher_tier_filtered_df.loc[higher_tier_filtered_df['상위티어 승률_numeric'].idxmax()] if not higher_tier_filtered_df.empty else None
 lower_tier_filtered_df = valid_players_df[valid_players_df['하위티어_경기수'] >= 20]
-highest_lower_tier_wr_player = lower_tier_filtered_df.loc[lower_tier_filtered_df['하위티어 승률_numeric'].idxmax()] if not lower_tier_filtered_df.empty else None
 
-lowest_same_tier_wr_player = same_tier_filtered_df.loc[same_tier_filtered_df['동티어 승률_numeric'].idxmin()] if not same_tier_filtered_df.empty else None
-lowest_higher_tier_wr_player = higher_tier_filtered_df.loc[higher_tier_filtered_df['상위티어 승률_numeric'].idxmin()] if not higher_tier_filtered_df.empty else None
-lowest_lower_tier_wr_player = lower_tier_filtered_df.loc[lower_tier_filtered_df['하위티어 승률_numeric'].idxmin()] if not lower_tier_filtered_df.empty else None
+top5_highest_same = same_tier_filtered_df.sort_values(by='동티어 승률_numeric', ascending=False).head(5)
+top5_lowest_same = same_tier_filtered_df.sort_values(by='동티어 승률_numeric', ascending=True).head(5)
+top5_highest_higher = higher_tier_filtered_df.sort_values(by='상위티어 승률_numeric', ascending=False).head(5)
+top5_lowest_higher = higher_tier_filtered_df[higher_tier_filtered_df['상위티어 승률_numeric'] > 0].sort_values(by='상위티어 승률_numeric', ascending=True).head(5)
+top5_highest_lower = lower_tier_filtered_df.sort_values(by='하위티어 승률_numeric', ascending=False).head(5)
+top5_lowest_lower = lower_tier_filtered_df[lower_tier_filtered_df['하위티어 승률_numeric'] > 0].sort_values(by='하위티어 승률_numeric', ascending=True).head(5)
 
 metrics_players_df = valid_players_df[~valid_players_df['현재 티어'].isin([0, 1, 9])]
 
@@ -165,48 +217,17 @@ with col1:
 
 with col2:
     st.markdown("#### 📋 세부 지표 분석 (유효 플레이어 기준)")
-    win_rate_texts = []
-    if highest_same_tier_wr_player is not None:
-        p = highest_same_tier_wr_player
-        win_rate_texts.append(f"**동티어승률(40전 이상)**: {int(p['현재 티어'])}티어 {p['이름']} ({int(p['동티어_경기수'])}게임, {p['동티어 승률_numeric']:.1f}%)")
-    else:
-        win_rate_texts.append("**동티어승률(40전 이상)**: 해당 없음")
+
+    highest_table_html = create_win_rate_table("🏆", "최고 승률 Top 5", (top5_highest_same, top5_highest_higher, top5_highest_lower))
+    st.markdown(highest_table_html, unsafe_allow_html=True)
     
-    if highest_higher_tier_wr_player is not None:
-        p = highest_higher_tier_wr_player
-        win_rate_texts.append(f"**상위티어승률(20전 이상)**:{int(p['현재 티어'])}티어 {p['이름']} ({int(p['상위티어_경기수'])}게임, {p['상위티어 승률_numeric']:.1f}%)")
-    else:
-        win_rate_texts.append("**상위티어승률(20전 이상)**: 해당 없음")
+    st.write("") 
 
-    if highest_lower_tier_wr_player is not None:
-        p = highest_lower_tier_wr_player
-        win_rate_texts.append(f"**하위티어승률(20전 이상)**: {int(p['현재 티어'])}티어 {p['이름']} ({int(p['하위티어_경기수'])}게임, {p['하위티어 승률_numeric']:.1f}%)")
-    else:
-        win_rate_texts.append("**하위티어승률(20전 이상)**: 해당 없음")
+    lowest_table_html = create_win_rate_table("💀", "최저 승률 Top 5", (top5_lowest_same, top5_lowest_higher, top5_lowest_lower))
+    st.markdown(lowest_table_html, unsafe_allow_html=True)
 
-    st.markdown("🏆 **최고 승률**<br>" + "<br>".join([f"&nbsp;&nbsp;&nbsp;└ {text}" for text in win_rate_texts]), unsafe_allow_html=True)
-    
-    lowest_win_rate_texts = []
-    p = lowest_same_tier_wr_player
-    if p is not None:
-        lowest_win_rate_texts.append(f"**동티어(40전 이상)**: {int(p['현재 티어'])}티어 {p['이름']} ({int(p['동티어_경기수'])}게임, {p['동티어 승률_numeric']:.1f}%)")
-    else:
-        lowest_win_rate_texts.append("**동티어(40전 이상)**: 해당 없음")
-
-    p = lowest_higher_tier_wr_player
-    if p is not None:
-        lowest_win_rate_texts.append(f"**상위티어(20전 이상)**: {int(p['현재 티어'])}티어 {p['이름']} ({int(p['상위티어_경기수'])}게임, {p['상위티어 승률_numeric']:.1f}%)")
-    else:
-        lowest_win_rate_texts.append("**상위티어(20전 이상)**: 해당 없음")
-    
-    p = lowest_lower_tier_wr_player
-    if p is not None:
-        lowest_win_rate_texts.append(f"**하위티어(20전 이상)**: {int(p['현재 티어'])}티어 {p['이름']} ({int(p['하위티어_경기수'])}게임, {p['하위티어 승률_numeric']:.1f}%)")
-    else:
-        lowest_win_rate_texts.append("**하위티어(20전 이상)**: 해당 없음")
-
-    st.markdown("💀 **최저 승률**<br>" + "<br>".join([f"&nbsp;&nbsp;&nbsp;└ {text}" for text in lowest_win_rate_texts]), unsafe_allow_html=True)
     st.markdown("---")
+    
     sub_col1, sub_col2, sub_col3 = st.columns(3)
 
     with sub_col1:
@@ -235,7 +256,7 @@ with col3:
                 <span style="font-size: 0.9em;">(높을 수록 큰 경기에 강함)</span>
             </li>
             <li>
-                <strong>표리부동</strong>: wwe/ufc 비율<br>
+                <strong>표리부동</strong>: wwe/ufc 승리 비율<br>
                 <span style="font-size: 0.8em;">(높을 수록 변수대처 능력이 떨어지거나, 빌드수행력이 떨어짐)</span>
             </li>
             <li style="margin-bottom: 8px;">
