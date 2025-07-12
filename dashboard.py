@@ -139,17 +139,17 @@ highest_lower_tier_wr_player = lower_tier_filtered_df.loc[lower_tier_filtered_df
 col1, col2, col3 = st.columns(3, gap="large")
 
 with col1:
-    st.markdown("#### 📈 티어 변동")
-    st.markdown("##### 승급")
+    st.markdown("####  티어 변동")
+    st.markdown("##### 📈 승급")
     st.text(format_player_list_by_tier(promoted_df, 'promotion'))
-    st.markdown("##### 강등")
+    st.markdown("##### 📉 강등")
     st.text(format_player_list_by_tier(demoted_df, 'promotion'))
     if '상태' in df.columns:
-        st.markdown("##### 이레귤러")
+        st.markdown("##### ⁉️ 이레귤러")
         st.text(format_player_list_by_tier(irregular_df, 'irregular'))
 
 with col2:
-    st.markdown("#### 📈 세부 지표 분석")
+    st.markdown("#### 📋 세부 지표 분석")
     win_rate_texts = []
     if highest_same_tier_wr_player is not None:
         p = highest_same_tier_wr_player
@@ -170,6 +170,28 @@ with col2:
         win_rate_texts.append("**하위티어(20전 이상)**: 해당 없음")
 
     st.markdown("🏆 **최고 승률**<br>" + "<br>".join([f"&nbsp;&nbsp;&nbsp;└ {text}" for text in win_rate_texts]), unsafe_allow_html=True)
+    
+    lowest_win_rate_texts = []
+    p = lowest_same_tier_wr_player
+    if p is not None:
+        lowest_win_rate_texts.append(f"**동티어(40전+)**: {int(p['현재 티어'])}티어 {p['이름']} ({int(p['동티어_경기수'])}게임, {p['동티어 승률_numeric']:.1f}%)")
+    else:
+        lowest_win_rate_texts.append("**동티어(40전+)**: 해당 없음")
+
+    p = lowest_higher_tier_wr_player
+    if p is not None:
+        lowest_win_rate_texts.append(f"**상위티어(20전+)**: {int(p['현재 티어'])}티어 {p['이름']} ({int(p['상위티어_경기수'])}게임, {p['상위티어 승률_numeric']:.1f}%)")
+    else:
+        lowest_win_rate_texts.append("**상위티어(20전+)**: 해당 없음")
+    
+    p = lowest_lower_tier_wr_player
+    if p is not None:
+        lowest_win_rate_texts.append(f"**하위티어(20전+)**: {int(p['현재 티어'])}티어 {p['이름']} ({int(p['하위티어_경기수'])}게임, {p['하위티어 승률_numeric']:.1f}%)")
+    else:
+        lowest_win_rate_texts.append("**하위티어(20전+)**: 해당 없음")
+
+    st.markdown("💀 **최저 승률**<br>" + "<br>".join([f"&nbsp;&nbsp;&nbsp;└ {text}" for text in lowest_win_rate_texts]), unsafe_allow_html=True)
+
     st.markdown("---") # 구분선
 
     # 2. 나머지 세부 지표
