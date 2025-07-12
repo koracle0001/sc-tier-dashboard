@@ -157,19 +157,19 @@ with col2:
     win_rate_texts = []
     if highest_same_tier_wr_player is not None:
         p = highest_same_tier_wr_player
-        win_rate_texts.append(f"**동티어(40전 이상)**: {int(p['현재 티어'])}티어 {p['이름']} ({p['동티어 승률']})")
+        win_rate_texts.append(f"**동티어(40전 이상)** {int(p['현재 티어'])}티어 {p['이름']} ({int(p['동티어_경기수'])}게임, {p['동티어 승률_numeric']:.1f}%)")
     else:
         win_rate_texts.append("**동티어(40전 이상)**: 해당 없음")
     
     if highest_higher_tier_wr_player is not None:
         p = highest_higher_tier_wr_player
-        win_rate_texts.append(f"**상위티어(20전 이상)**: {int(p['현재 티어'])}티어 {p['이름']} ({p['상위티어 승률']})")
+        win_rate_texts.append(f"**상위티어(20전 이상)**:{int(p['현재 티어'])}티어 {p['이름']} ({int(p['상위티어_경기수'])}게임, {p['상위티어 승률_numeric']:.1f}%)")
     else:
         win_rate_texts.append("**상위티어(20전 이상)**: 해당 없음")
 
     if highest_lower_tier_wr_player is not None:
         p = highest_lower_tier_wr_player
-        win_rate_texts.append(f"**하위티어(20전 이상)**: {int(p['현재 티어'])}티어 {p['이름']} ({p['하위티어 승률']})")
+        win_rate_texts.append(f"**하위티어(20전 이상)**: {int(p['현재 티어'])}티어 {p['이름']} ({int(p['하위티어_경기수'])}게임, {p['하위티어 승률_numeric']:.1f}%)")
     else:
         win_rate_texts.append("**하위티어(20전 이상)**: 해당 없음")
 
@@ -178,21 +178,21 @@ with col2:
     lowest_win_rate_texts = []
     p = lowest_same_tier_wr_player
     if p is not None:
-        lowest_win_rate_texts.append(f"**동티어(40전+)**: {int(p['현재 티어'])}티어 {p['이름']} ({int(p['동티어_경기수'])}게임, {p['동티어 승률_numeric']:.1f}%)")
+        lowest_win_rate_texts.append(f"**동티어(40전 이상)**: {int(p['현재 티어'])}티어 {p['이름']} ({int(p['동티어_경기수'])}게임, {p['동티어 승률_numeric']:.1f}%)")
     else:
-        lowest_win_rate_texts.append("**동티어(40전+)**: 해당 없음")
+        lowest_win_rate_texts.append("**동티어(40전 이상)**: 해당 없음")
 
     p = lowest_higher_tier_wr_player
     if p is not None:
-        lowest_win_rate_texts.append(f"**상위티어(20전+)**: {int(p['현재 티어'])}티어 {p['이름']} ({int(p['상위티어_경기수'])}게임, {p['상위티어 승률_numeric']:.1f}%)")
+        lowest_win_rate_texts.append(f"**상위티어(20전 이상)**: {int(p['현재 티어'])}티어 {p['이름']} ({int(p['상위티어_경기수'])}게임, {p['상위티어 승률_numeric']:.1f}%)")
     else:
-        lowest_win_rate_texts.append("**상위티어(20전+)**: 해당 없음")
+        lowest_win_rate_texts.append("**상위티어(20전 이상)**: 해당 없음")
     
     p = lowest_lower_tier_wr_player
     if p is not None:
-        lowest_win_rate_texts.append(f"**하위티어(20전+)**: {int(p['현재 티어'])}티어 {p['이름']} ({int(p['하위티어_경기수'])}게임, {p['하위티어 승률_numeric']:.1f}%)")
+        lowest_win_rate_texts.append(f"**하위티어(20전 이상)**: {int(p['현재 티어'])}티어 {p['이름']} ({int(p['하위티어_경기수'])}게임, {p['하위티어 승률_numeric']:.1f}%)")
     else:
-        lowest_win_rate_texts.append("**하위티어(20전+)**: 해당 없음")
+        lowest_win_rate_texts.append("**하위티어(20전 이상)**: 해당 없음")
 
     st.markdown("💀 **최저 승률**<br>" + "<br>".join([f"&nbsp;&nbsp;&nbsp;└ {text}" for text in lowest_win_rate_texts]), unsafe_allow_html=True)
 
