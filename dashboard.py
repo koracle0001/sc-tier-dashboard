@@ -2,11 +2,26 @@ import streamlit as st
 import pandas as pd
 
 # --- 페이지 기본 설정 (넓은 레이아웃 사용) ---
-st.set_page_config(layout="wide")
+st.set_page_config(layout="wide", page_title="스타 여캠 밸런스 티어표")
+
+def highlight_rows(row):
+    style = ''
+
+    if row['티어 변동'] in ['승급']:
+        style = 'background-color: lightblue; color: black;'
+
+    if row['티어 변동'] in ['강등']:
+        style = 'background-color: lemonyellow; color: black;'
+                
+    if '상태' in row and row['상태'] == '이레귤러':
+        style = 'background-color: lightsalmon; color: black;'
+
+    return [style] * len(row)
+
 
 # --- 대시보드 제목 설정 ---
-st.title('⭐ 스타크래프트 여캠 티어 분석 로그')
-st.caption(f"데이터 기준일: 2025-07-12") # 날짜는 수동으로 업데이트
+st.title('⭐ 스타크래프트 여캠 밸런스 티어표 및 분석로그')
+st.caption(f"데이터 기준일: 2025-07-12")  
 
 # --- 데이터 파일 불러오기 ---
 try:
@@ -17,10 +32,15 @@ except FileNotFoundError:
 
 # --- 전체 순위표 표시 ---
 st.header('종합 리포트')
-st.dataframe(df)
+
+styled_df = df.style.apply(highlight_rows, axis=1) \
+                    .set_properties(**{'text-align': 'center'}) \
+                    .format({'클러치': "{:.2f}", '표리부동': "{:.2f}"})
+
+st.dataframe(styled_df, use_container_width=True)
 
 # --- 간단한 통계 정보 표시 ---
-st.divider() # 구분선
+st.divider()  
 st.header('요약 통계')
 
 total_players = len(df)
