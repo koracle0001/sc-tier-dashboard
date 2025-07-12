@@ -235,7 +235,7 @@ with col3:
                 <span style="font-size: 0.9em;">(높을 수록 큰 경기에 강함)</span>
             </li>
             <li style="margin-bottom: 8px;">
-                <strong>로직 신뢰도 등급</strong>: 판정 결과의 유효 신뢰도<br>
+                <strong>로직 신뢰도 등급</strong>: 판정 결과의 유효 지속성<br>
                 <span style="font-size: 0.9em;">(플레이어의 점수에는 일절 영향을 주지 않음)</span>
             </li>
             <li>
