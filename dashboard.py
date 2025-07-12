@@ -15,7 +15,10 @@ def highlight_rows(row):
 
     if row['티어 변동'] in ['강등']:
         style = 'background-color: #FFEC8B; color: black;' # Lemonyellow 대체
-                
+ 
+    if row['티어 변동'] in ['유예']:
+        style = 'background-color: #E5E4E2; color: black;'
+               
     if '상태' in row and row['상태'] == '이레귤러':
         style = 'background-color: lightsalmon; color: black;'
 
@@ -135,48 +138,49 @@ with col3:
 st.divider()
 st.header('📊 요약 통계')
 total_players = len(df)
-tier_distribution = df['현재 티어'].value_counts().sort_index().reset_index()
-tier_distribution.columns = ['티어', '인원 수'] 
-tier_distribution['티어'] = tier_distribution['티어'].astype(int).astype(str) + "티어"
+pending_players_count = (df['분류'] == '평가유예').sum()
+valid_players_count = total_players - pending_players_count
 
-col1, col2 = st.columns([1, 2]) 
+tier_distribution = df.groupby(['현재 티어', '분류']).size().unstack(fill_value=0)
+tier_distribution = tier_distribution.sort_index()
+tier_distribution.index = tier_distribution.index.astype(int).astype(str) + "티어"
 
+col1, col2 = st.columns([1, 2])
 with col1:
-    st.metric("총 분석 인원", f"{total_players} 명")
+    st.write("#### 전체 인원 현황")
+    st.markdown(f"##### 총 플레이어: **{total_players}**명")
+    st.markdown(f"##### 유효 플레이어: **{valid_players_count}**명")
+    st.markdown(f"##### 평가유예 플레이어: **{pending_players_count}**명")
 
 with col2:
-    light_colors = px.colors.qualitative.Pastel
-    color_map = {tier: color for tier, color in zip(sorted(tier_distribution['티어'].unique()), light_colors)}
-
+    st.write("#### 티어별 인원 분포")
+    
+    # 누적 막대그래프 생성
     fig = px.bar(
-        tier_distribution, 
-        x='티어', 
-        y='인원 수',
-        color='티어',
-        color_discrete_map=color_map, 
-        text='인원 수'  
+        tier_distribution,
+        x=tier_distribution.index,
+        y=['유효', '평가유예'],
+        color_discrete_map={'유효': '#636EFA', '평가유예': 'lightgrey'},
+        labels={'value': '인원 수', 'x': '티어', 'variable': '분류'}
     )
 
-    fig.update_traces(
-        texttemplate='%{text}명', 
-        textposition='outside',
-        textfont=dict(color='black', size=12)
-    )
-
+    # 그래프 디자인 세부 조정
     fig.update_layout(
-        title_text='<b>티어별 인원 분포</b>',
+        title_text='<b>티어별 인원 분포 (유효/평가유예)</b>',
         title_x=0.5,
         xaxis_title="",
-        yaxis_title="",  
-        showlegend=False,
-        yaxis=dict(visible=False)  
+        yaxis_title="",
+        barmode='stack',
+        legend_title_text='분류',
+        yaxis=dict(visible=False)
+    )
+    fig.update_xaxes(
+        type='category',
+        tickangle=0,
+        tickfont=dict(color='black', size=12)
     )
     
-    fig.update_xaxes(
-        type='category',  
-        tickangle=0,
-        tickfont=dict(color='black', size=14)  
-    )
-
     config = {'staticPlot': True}
     st.plotly_chart(fig, use_container_width=True, config=config)
+
+ 
