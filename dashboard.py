@@ -61,7 +61,7 @@ def classify_player(row):
 # --------------------
 
 # --- 대시보드 제목 설정 ---
-st.title('⭐ 스타크래프트 여캠 밸런스 티어표 및 분석로그')
+st.title('⭐ 스타크래프트 여캠 밸런스 티어표')
 st.markdown("""
 <div style="text-align: left;">
     <p style="font-size: 1.1em; color: black; margin-bottom: 0;"><b>데이터 갱신일: 2025-07-16</b></p>
@@ -145,6 +145,10 @@ lowest_same_tier_wr_player = same_tier_filtered_df.loc[same_tier_filtered_df['�
 lowest_higher_tier_wr_player = higher_tier_filtered_df.loc[higher_tier_filtered_df['상위티어 승률_numeric'].idxmin()] if not higher_tier_filtered_df.empty else None
 lowest_lower_tier_wr_player = lower_tier_filtered_df.loc[lower_tier_filtered_df['하위티어 승률_numeric'].idxmin()] if not lower_tier_filtered_df.empty else None
 
+top_5_matches = valid_players_df.sort_values(by='총 경기수_numeric_safe', ascending=False).head(5)
+top_5_clutch = valid_players_df.sort_values(by='클러치_numeric_safe', ascending=False).head(5)
+top_5_hypocrisy = valid_players_df.sort_values(by='표리부동_numeric_safe', ascending=False).head(5)
+
 col1, col2, col3 = st.columns(3, gap="large")
 
 with col1:
@@ -201,26 +205,28 @@ with col2:
 
     st.markdown("💀 **최저 승률**<br>" + "<br>".join([f"&nbsp;&nbsp;&nbsp;└ {text}" for text in lowest_win_rate_texts]), unsafe_allow_html=True)
 
-    st.markdown("---") # 구분선
-
     # 2. 나머지 세부 지표
-    p = most_matches_player
-    st.markdown(f"💪 **최다 경기**: **{int(p['현재 티어'])}티어** {p['이름']} ({int(p['총 경기수'])} 경기)")
+    st.markdown("💪 **최다 경기 Top 5**")
+    for i, (_, row) in enumerate(top_5_matches.iterrows()):
+        st.markdown(f"&nbsp;&nbsp;&nbsp;{i+1}. **{int(row['현재 티어'])}티어** {row['이름']} ({int(row['총 경기수'])} 경기)")
+    st.write("") #여백
     
-    p = highest_clutch_player
-    st.markdown(f"🎯 **최고 클러치**: **{int(p['현재 티어'])}티어** {p['이름']} ({float(p['클러치']):.2f})")
+    st.markdown("🎯 **최고 클러치 Top 5**")
+    for i, (_, row) in enumerate(top_5_clutch.iterrows()):
+        st.markdown(f"&nbsp;&nbsp;&nbsp;{i+1}. **{int(row['현재 티어'])}티어** {row['이름']} ({float(row['클러치']):.2f})")
+    st.write("") #여백
     
-    p = highest_hypocrisy_player
-    st.markdown(f"🤔 **최고 표리부동**: **{int(p['현재 티어'])}티어** {p['이름']} ({float(p['표리부동']):.2f})")
+    st.markdown("🤔 **최고 표리부동 Top 5**")
+    for i, (_, row) in enumerate(top_5_hypocrisy.iterrows()):
+        st.markdown(f"&nbsp;&nbsp;&nbsp;{i+1}. **{int(row['현재 티어'])}티어** {row['이름']} ({float(row['표리부동']):.2f})")
 
 with col3:
     st.markdown("#### ℹ️ 지표 설명")
     st.info(
         """
-        - **최고 승률**: 각 부문별 최소 경기 수를 충족한 선수 중 승률이 가장 높은 선수입니다.
-        - **최다 경기**: 평가 기간 내 가장 많은 경기를 소화한 선수입니다.
-        - **클러치**: 중요한 경기(대회 등)에서 높은 승률을 보이는 성향입니다. (긍정적)
-        - **표리부동**: 스폰빵(연습) 성적에 비해 대회 성적이 낮은 성향입니다. (부정적)
+        - **이레귤러**: 여러 해석이 가능하지만, 기본적으로 특정상황에서 티어 내 강자를 의미합니다.
+        - **클러치**: 스폰 게임 대비 중요 경기 기대 승률을 나타냅니다.(높을 수록 큰 경기에 강함)
+        - **표리부동**: wwe/ufc 비율을 나타냅니다. (높을 수록 변수대처 능력이 떨어지거나, 빌드수행력이 떨어짐)
         """
     )
 
