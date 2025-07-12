@@ -149,7 +149,7 @@ top_5_matches = valid_players_df.sort_values(by='총 경기수_numeric_safe', as
 top_5_clutch = valid_players_df.sort_values(by='클러치_numeric_safe', ascending=False).head(5)
 top_5_hypocrisy = valid_players_df.sort_values(by='표리부동_numeric_safe', ascending=False).head(5)
 
-col1, col2, col3 = st.columns([1.3, 2.7, 2])
+col1, col2, col3 = st.columns([1.4, 2.6, 2])
 
 with col1:
     st.markdown("#### ✒️ 티어 변동")
