@@ -298,18 +298,27 @@ with col2_sum:
         color_discrete_map=color_map,
         labels={'value': '인원 수', 'x': '티어', 'variable': '분류'}, text_auto=True
     )
+    
     fig.update_traces(
         textposition='outside', textfont=dict(color='black', size=12), selector=dict(type='bar')
     )
     fig.for_each_trace(lambda t: t.update(texttemplate = ["" if v == 0 else f"{v:,.0f}" for v in t.y]))
+    
     max_y_value = tier_distribution.sum(axis=1).max()
 
     fig.update_layout(
         xaxis_title="", yaxis_title="", barmode='stack',
         legend_title_text='분류', height=500, margin=dict(t=20),
-        yaxis=dict(visible=False, range=[0, max_y_value * 1.15])
+        font=dict(color="black")  
     )
-    fig.update_xaxes(type='category', tickangle=0, tickfont=dict(color='black', size=12))
+    
+    fig.update_xaxes(
+        type='category', tickangle=0, tickfont=dict(size=12) 
+    )
+    fig.update_yaxes(
+        visible=False, range=[0, max_y_value * 1.20]  
+    )
     
     config = {'staticPlot': True}
-    st.plotly_chart(fig, use_container_width=True, config=config) 
+    st.plotly_chart(fig, use_container_width=True, config=config)
+
