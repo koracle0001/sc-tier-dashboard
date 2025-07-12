@@ -64,7 +64,7 @@ def classify_player(row):
 st.title('⭐ 스타크래프트 여캠 밸런스 티어표')
 st.markdown("""
 <div style="text-align: left;">
-    <p style="font-size: 1.1em; color: black; margin-bottom: 0;"><b>데이터 갱신일: 2025-07-16</b></p>
+    <p style="font-size: 1.1em; color: black; margin-bottom: 0;"><b>데이터 갱신일: 2025-07-12</b></p>
     <p style="margin-bottom: 0.1em;">평가기간: 2025-05-24 ~ 2025-07-16</p>
     <p style="font-size: 0.9em; color: black;">제작자: UnKn0wn1</p>
 </div>
