@@ -163,9 +163,7 @@ inactive_players_count = (df['분류'] == '비활성화').sum()
 pending_players_count = (df['분류'] == '평가유예').sum()
 valid_players_count = total_players - inactive_players_count - pending_players_count
 
-# 누적 막대 그래프를 위한 데이터 가공
 tier_distribution = df.groupby(['현재 티어', '분류']).size().unstack(fill_value=0)
-
 desired_order = ['유효', '평가유예', '비활성화']
 tier_distribution = tier_distribution.reindex(columns=[col for col in desired_order if col in tier_distribution.columns])
 tier_distribution = tier_distribution.sort_index()
@@ -187,29 +185,35 @@ with col2:
     fig = px.bar(
         tier_distribution,
         x=tier_distribution.index,
-        y=tier_distribution.columns,  
+        y=tier_distribution.columns,
         color_discrete_map=color_map,
         labels={'value': '인원 수', 'x': '티어', 'variable': '분류'},
         text_auto=True
     )
+    
     fig.update_traces(
-        textposition='inside', 
-        textfont=dict(color='white'),  
+        textposition='inside',
+        insidetextanchor='middle', 
+        textfont=dict(color='white', size=13), 
         selector=dict(type='bar')
     )
+    # 값이 0인 막대에서는 텍스트를 표시하지 않음
     fig.for_each_trace(lambda t: t.update(texttemplate = ["" if v == 0 else f"{v:,.0f}" for v in t.y]))
     
     fig.update_layout(
-        title_text='<b>티어별 인원 분포 (유효/평가유예/비활성화)</b>', title_x=0.5,
-        xaxis_title="", yaxis_title="", barmode='stack',
-        legend_title_text='분류', yaxis=dict(visible=False)
+        title_text='<b>티어별 인원 분포</b>', 
+        title_x=0.5,
+        xaxis_title="",
+        yaxis_title="",
+        barmode='stack',
+        legend_title_text='분류',
+        yaxis=dict(visible=False),
+        height=500 
     )
     fig.update_xaxes(type='category', tickangle=0, tickfont=dict(color='black', size=12))
     
     config = {'staticPlot': True}
     st.plotly_chart(fig, use_container_width=True, config=config)
-
-
 
 
 
