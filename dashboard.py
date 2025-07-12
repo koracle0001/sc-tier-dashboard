@@ -10,11 +10,14 @@ st.set_page_config(layout="wide", page_title="스타 여캠 밸런스 티어표"
 def highlight_rows(row):
     style = ''
 
-    if row['티어 변동'] in ['승급']:
-        style = 'background-color: lightblue; color: black;'
+    if row['티어 변동'] == '비활성화':
+        return ['background-color: black; color: white;'] * len(row)
 
-    if row['티어 변동'] in ['강등']:
-        style = 'background-color: #FFEC8B; color: black;' # Lemonyellow 대체
+    if row['티어 변동'] == '승급':
+        return ['background-color: lightblue; color: black;'] * len(row)
+    
+    if row['티어 변동'] == '강등':
+        return ['background-color: #FFEC8B; color: black;'] * len(row)
  
     if row['티어 변동'] in ['유예']:
         style = 'background-color: #E5E4E2; color: black;'
@@ -44,6 +47,15 @@ def format_player_list_by_tier(player_df, format_type):
         
     return "\n".join(output_lines)
 
+def classify_player(row):
+
+    if row['티어 변동'] == '비활성화':
+        return '비활성화'
+    elif row['티어 내 순위'] == '-':
+        return '평가유예'
+    else:
+        return '유효'
+
 # --------------------
 # 메인 대시보드
 # --------------------
@@ -62,7 +74,7 @@ except FileNotFoundError:
 for col in ['동티어 승률', '상위티어 승률', '하위티어 승률']:
     df[f'{col}_numeric'] = df[col].astype(str).str.extract(r'(\d+\.?\d*)').astype(float).fillna(0)
     df[f'{col.split(" ")[0]}_경기수'] = df[col].astype(str).str.extract(r'\((\d+)\s*게임\)').astype(float).fillna(0)
-df['분류'] = df['티어 내 순위'].apply(lambda x: '평가유예' if x == '-' else '유효')
+df['분류'] = df.apply(classify_player, axis=1)
 
 st.header('밸런스 티어표')
 display_columns = [col for col in df.columns if not col.endswith(('_numeric', '_경기수', '분류'))]
@@ -89,15 +101,16 @@ df['총 경기수_numeric_safe'] = pd.to_numeric(df['총 경기수'], errors='co
 df['클러치_numeric_safe'] = pd.to_numeric(df['클러치'], errors='coerce')
 df['표리부동_numeric_safe'] = pd.to_numeric(df['표리부동'], errors='coerce')
 
-most_matches_player = df.loc[df['총 경기수_numeric_safe'].idxmax()]
-highest_clutch_player = df.loc[df['클러치_numeric_safe'].idxmax()]
-highest_hypocrisy_player = df.loc[df['표리부동_numeric_safe'].idxmax()]
+valid_players_df = df[df['분류'] == '유효']
+most_matches_player = valid_players_df.loc[valid_players_df['총 경기수_numeric_safe'].idxmax()]
+highest_clutch_player = valid_players_df.loc[valid_players_df['클러치_numeric_safe'].idxmax()]
+highest_hypocrisy_player = valid_players_df.loc[valid_players_df['표리부동_numeric_safe'].idxmax()]
 
-same_tier_filtered_df = df[df['동티어_경기수'] >= 40]
+same_tier_filtered_df = valid_players_df[valid_players_df['동티어_경기수'] >= 40]
 highest_same_tier_wr_player = same_tier_filtered_df.loc[same_tier_filtered_df['동티어 승률_numeric'].idxmax()] if not same_tier_filtered_df.empty else None
-higher_tier_filtered_df = df[df['상위티어_경기수'] >= 20]
+higher_tier_filtered_df = valid_players_df[valid_players_df['상위티어_경기수'] >= 20]
 highest_higher_tier_wr_player = higher_tier_filtered_df.loc[higher_tier_filtered_df['상위티어 승률_numeric'].idxmax()] if not higher_tier_filtered_df.empty else None
-lower_tier_filtered_df = df[df['하위티어_경기수'] >= 20]
+lower_tier_filtered_df = valid_players_df[valid_players_df['하위티어_경기수'] >= 20]
 highest_lower_tier_wr_player = lower_tier_filtered_df.loc[lower_tier_filtered_df['하위티어 승률_numeric'].idxmax()] if not lower_tier_filtered_df.empty else None
 
 col1, col2, col3 = st.columns(3, gap="large")
@@ -144,35 +157,50 @@ with col3:
 # --- 요약 통계 ---
 st.divider()
 st.header('📊 요약 통계')
+
 total_players = len(df)
+inactive_players_count = (df['분류'] == '비활성화').sum()
 pending_players_count = (df['분류'] == '평가유예').sum()
-valid_players_count = total_players - pending_players_count
+valid_players_count = total_players - inactive_players_count - pending_players_count
+
+# 누적 막대 그래프를 위한 데이터 가공
 tier_distribution = df.groupby(['현재 티어', '분류']).size().unstack(fill_value=0)
+
+desired_order = ['유효', '평가유예', '비활성화']
+tier_distribution = tier_distribution.reindex(columns=[col for col in desired_order if col in tier_distribution.columns])
 tier_distribution = tier_distribution.sort_index()
 tier_distribution.index = tier_distribution.index.astype(int).astype(str) + "티어"
+
 col1, col2 = st.columns([1, 2])
 with col1:
     st.write("#### 전체 인원 현황")
     st.markdown(f"##### 총 플레이어: **{total_players}**명")
     st.markdown(f"##### 유효 플레이어: **{valid_players_count}**명")
     st.markdown(f"##### 평가유예 플레이어: **{pending_players_count}**명")
+    st.markdown(f"##### 비활성화 플레이어: **{inactive_players_count}**명")
+
 with col2:
     st.write("#### 티어별 인원 분포")
+    
+    color_map = {'유효': '#636EFA', '평가유예': 'lightgrey', '비활성화': 'black'}
     
     fig = px.bar(
         tier_distribution,
         x=tier_distribution.index,
-        y=['유효', '평가유예'],
-        color_discrete_map={'유효': '#636EFA', '평가유예': 'lightgrey'},
+        y=tier_distribution.columns,  
+        color_discrete_map=color_map,
         labels={'value': '인원 수', 'x': '티어', 'variable': '분류'},
-        text_auto=True   
+        text_auto=True
     )
-
-    fig.update_traces(texttemplate='%{y:,.0f}명', textposition='inside', selector=dict(type='bar'))
-    fig.for_each_trace(lambda t: t.update(texttemplate = ["" if v == 0 else f"{v:,.0f}명" for v in t.y]))
+    fig.update_traces(
+        textposition='inside', 
+        textfont=dict(color='white'),  
+        selector=dict(type='bar')
+    )
+    fig.for_each_trace(lambda t: t.update(texttemplate = ["" if v == 0 else f"{v:,.0f}" for v in t.y]))
     
     fig.update_layout(
-        title_text='<b>티어별 인원 분포 (유효/평가유예)</b>', title_x=0.5,
+        title_text='<b>티어별 인원 분포 (유효/평가유예/비활성화)</b>', title_x=0.5,
         xaxis_title="", yaxis_title="", barmode='stack',
         legend_title_text='분류', yaxis=dict(visible=False)
     )
@@ -180,3 +208,9 @@ with col2:
     
     config = {'staticPlot': True}
     st.plotly_chart(fig, use_container_width=True, config=config)
+
+
+
+
+
+
