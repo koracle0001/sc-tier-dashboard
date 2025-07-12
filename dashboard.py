@@ -158,24 +158,25 @@ with col1:
     st.markdown(f"##### 평가유예 플레이어: **{pending_players_count}**명")
 with col2:
     st.write("#### 티어별 인원 분포")
-    light_colors = px.colors.qualitative.Pastel
-    color_map = {tier: color for tier, color in zip(sorted(tier_distribution.index.unique()), light_colors)}
+    
     fig = px.bar(
-        tier_distribution, x=tier_distribution.index, y=['유효', '평가유예'],
+        tier_distribution,
+        x=tier_distribution.index,
+        y=['유효', '평가유예'],
         color_discrete_map={'유효': '#636EFA', '평가유예': 'lightgrey'},
         labels={'value': '인원 수', 'x': '티어', 'variable': '분류'},
-        text='인원 수'
+        text_auto=True   
     )
-    fig.update_traces(
-        texttemplate='%{text}명', textposition='outside', textfont=dict(color='black', size=12)
-    )
+
+    fig.update_traces(texttemplate='%{y:,.0f}명', textposition='inside', selector=dict(type='bar'))
+    fig.for_each_trace(lambda t: t.update(texttemplate = ["" if v == 0 else f"{v:,.0f}명" for v in t.y]))
+    
     fig.update_layout(
         title_text='<b>티어별 인원 분포 (유효/평가유예)</b>', title_x=0.5,
         xaxis_title="", yaxis_title="", barmode='stack',
         legend_title_text='분류', yaxis=dict(visible=False)
     )
-    fig.update_xaxes(
-        type='category', tickangle=0, tickfont=dict(color='black', size=12)
-    )
+    fig.update_xaxes(type='category', tickangle=0, tickfont=dict(color='black', size=12))
+    
     config = {'staticPlot': True}
     st.plotly_chart(fig, use_container_width=True, config=config)
