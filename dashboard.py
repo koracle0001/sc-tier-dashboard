@@ -234,13 +234,13 @@ with col3:
                 <strong>클러치</strong>: 스폰 게임 대비 중요 경기 기대 승률<br>
                 <span style="font-size: 0.9em;">(높을 수록 큰 경기에 강함)</span>
             </li>
-            <li style="margin-bottom: 8px;">
-                <strong>로직 신뢰도 등급</strong>: 판정 결과의 유효 지속성<br>
-                <span style="font-size: 0.9em;">(플레이어의 점수에는 일절 영향을 주지 않음)</span>
-            </li>
             <li>
                 <strong>표리부동</strong>: wwe/ufc 비율<br>
                 <span style="font-size: 0.8em;">(높을 수록 변수대처 능력이 떨어지거나, 빌드수행력이 떨어짐)</span>
+            </li>
+            <li style="margin-bottom: 8px;">
+                <strong>로직 신뢰도 등급</strong>: 판정 결과의 유효 지속성<br>
+                <span style="font-size: 0.9em;">(플레이어의 점수에는 일절 영향을 주지 않음)</span>
             </li>
         </ul>
     </div>
@@ -284,8 +284,8 @@ with col1_sum:
     st.write("#### 전체 인원 현황")
     st.markdown(f"##### 총 플레이어: **{total_players}**명")
     st.markdown(f"##### 유효 플레이어: **{valid_players_count}**명")
-    st.markdown(f"##### 유예인원 최다티어: **{max_pending_tier_text}**")
     st.markdown(f"##### 평가유예 플레이어: **{pending_players_count}**명")
+    st.markdown(f"##### 유예인원 최다티어: **{max_pending_tier_text}**")
     st.markdown(f"##### 비활성화 플레이어: **{inactive_players_count}**명")
 
 with col2_sum:
