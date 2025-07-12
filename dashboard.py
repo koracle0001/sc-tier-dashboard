@@ -56,7 +56,7 @@ except FileNotFoundError:
 
 for col in ['동티어 승률', '상위티어 승률', '하위티어 승률']:
     df[f'{col}_numeric'] = df[col].astype(str).str.extract(r'(\d+\.?\d*)').astype(float).fillna(0)
-df['동티어_경기수'] = df['동티어 승률'].astype(str).str.extract(r'\((\d+)\s*게임\)').astype(float).fillna(0)
+    df[f'{col.split(" ")[0]}_경기수'] = df[col].astype(str).str.extract(r'\((\d+)\s*게임\)').astype(float).fillna(0)
 
 display_columns = [col for col in df.columns if not col.endswith(('_numeric', '_경기수'))]
 display_df = df[display_columns]
