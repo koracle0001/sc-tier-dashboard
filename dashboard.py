@@ -149,7 +149,7 @@ top_5_matches = valid_players_df.sort_values(by='총 경기수_numeric_safe', as
 top_5_clutch = valid_players_df.sort_values(by='클러치_numeric_safe', ascending=False).head(5)
 top_5_hypocrisy = valid_players_df.sort_values(by='표리부동_numeric_safe', ascending=False).head(5)
 
-col1, col2, col3 = st.columns([1.5, 2, 2])
+col1, col2, col3 = st.columns([1.5, 2.5, 2])
 
 with col1:
     st.markdown("#### ✒️ 티어 변동")
@@ -204,19 +204,21 @@ with col2:
         lowest_win_rate_texts.append("**하위티어(20전 이상)**: 해당 없음")
 
     st.markdown("💀 **최저 승률**<br>" + "<br>".join([f"&nbsp;&nbsp;&nbsp;└ {text}" for text in lowest_win_rate_texts]), unsafe_allow_html=True)
+    st.markdown("---")
+    sub_col1, sub_col2, sub_col3 = st.columns(3)
 
-    # 2. 나머지 세부 지표
-    matches_texts = [f"{i+1}. **{int(row['현재 티어'])}티어** {row['이름']} ({int(row['총 경기수'])} 경기)" for i, (_, row) in enumerate(top_5_matches.iterrows())]
-    st.markdown("💪 **최다 경기 Top 5**<br>" + "<br>".join([f"&nbsp;&nbsp;{text}" for text in matches_texts]), unsafe_allow_html=True)
-    st.write("") 
+    with sub_col1:
+        matches_texts = [f"{i+1}. **{int(row['현재 티어'])}티어** {row['이름']} ({int(row['총 경기수'])} 경기)" for i, (_, row) in enumerate(top_5_matches.iterrows())]
+        st.markdown("💪 **최다 경기 Top 5**<br>" + "<br>".join(matches_texts), unsafe_allow_html=True)
 
-    clutch_texts = [f"{i+1}. **{int(row['현재 티어'])}티어** {row['이름']} ({float(row['클러치']):.2f})" for i, (_, row) in enumerate(top_5_clutch.iterrows())]
-    st.markdown("🎯 **최고 클러치 Top 5**<br>" + "<br>".join([f"&nbsp;&nbsp;{text}" for text in clutch_texts]), unsafe_allow_html=True)
-    st.write("")
+    with sub_col2:
+        clutch_texts = [f"{i+1}. **{int(row['현재 티어'])}티어** {row['이름']} ({float(row['클러치']):.2f})" for i, (_, row) in enumerate(top_5_clutch.iterrows())]
+        st.markdown("🎯 **최고 클러치 Top 5**<br>" + "<br>".join(clutch_texts), unsafe_allow_html=True)
 
-    hypocrisy_texts = [f"{i+1}. **{int(row['현재 티어'])}티어** {row['이름']} ({float(row['표리부동']):.2f})" for i, (_, row) in enumerate(top_5_hypocrisy.iterrows())]
-    st.markdown("🤔 **최고 표리부동 Top 5**<br>" + "<br>".join([f"&nbsp;&nbsp;{text}" for text in hypocrisy_texts]), unsafe_allow_html=True)
-
+    with sub_col3:
+        hypocrisy_texts = [f"{i+1}. **{int(row['현재 티어'])}티어** {row['이름']} ({float(row['표리부동']):.2f})" for i, (_, row) in enumerate(top_5_hypocrisy.iterrows())]
+        st.markdown("🤔 **최고 표리부동 Top 5**<br>" + "<br>".join(hypocrisy_texts), unsafe_allow_html=True)
+ 
 with col3:
     st.markdown("#### ℹ️ 지표 설명")
     st.info(
