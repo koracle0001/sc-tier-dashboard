@@ -164,7 +164,7 @@ with col1:
         st.text(format_player_list_by_tier(irregular_df, 'irregular'))
 
 with col2:
-    st.markdown("#### 📋 세부 지표 분석 (유효 플레이어 기준)")
+    st.markdown("#### 📋 세부 지표 분석 (유효 플레이어 기준!!)")
     # --- 최고 승률 Top 5 ---
     st.markdown("##### 🏆 최고 승률 Top 5")
     sub_col1, sub_col2, sub_col3 = st.columns(3)
