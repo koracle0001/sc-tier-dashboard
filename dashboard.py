@@ -168,7 +168,7 @@ with col2:
     win_rate_texts = []
     if highest_same_tier_wr_player is not None:
         p = highest_same_tier_wr_player
-        win_rate_texts.append(f"**동티어승률(40전 이상)** {int(p['현재 티어'])}티어 {p['이름']} ({int(p['동티어_경기수'])}게임, {p['동티어 승률_numeric']:.1f}%)")
+        win_rate_texts.append(f"**동티어승률(40전 이상)**: {int(p['현재 티어'])}티어 {p['이름']} ({int(p['동티어_경기수'])}게임, {p['동티어 승률_numeric']:.1f}%)")
     else:
         win_rate_texts.append("**동티어승률(40전 이상)**: 해당 없음")
     
@@ -238,6 +238,17 @@ with col3:
                 <strong>표리부동</strong>: wwe/ufc 비율<br>
                 <span style="font-size: 0.8em;">(높을 수록 변수대처 능력이 떨어지거나, 빌드수행력이 떨어짐)</span>
             </li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("#### ⚙️ 개선 작업중")
+    st.markdown("""
+    <div style="background-color: #fffbe6; border-left: 5px solid #ffffcc; padding: 10px; border-radius: 5px; margin: 10px 0;">
+        <p style="font-weight: bold; margin-bottom: 10px;"> (8월 내 적용예정, 테스트 중)</p>
+        <ul style="list-style-position: inside; padding-left: 0; margin-bottom: 0;">
+            <li>특정 플레이어의 상세로그 공개에 관한 프로세스를 준비중입니다.</li>
+            <li>요청이 많은 순서대로 공개할 수 있도록 하겠습니다.</li>
         </ul>
     </div>
     """, unsafe_allow_html=True)
