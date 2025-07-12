@@ -315,13 +315,17 @@ with col2_sum:
         margin=dict(t=20),
         paper_bgcolor='white',  
         plot_bgcolor='white',   
-        font=dict(color="black")  
+        font=dict(color="black"),      
+        legend=dict(
+            title_text='분류',      # 범례 제목
+            font=dict(color="black") # 범례의 모든 글씨(제목 포함) 색상
+        )
     )
     
     fig.update_xaxes(
         type='category', 
         tickangle=0, 
-        tickfont=dict(size=12) 
+        tickfont=dict(color="black", size=11) 
     )
     fig.update_yaxes(
         visible=False, 
