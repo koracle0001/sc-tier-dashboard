@@ -90,7 +90,7 @@ st.dataframe(styled_df, use_container_width=True)
 
 # --- 기간 내 주요 선수 ---
 st.divider()
-st.header('🏆 기간 내 주요 선수')
+st.header('📈 평가기간 내 주요 이슈')
 
 # 데이터 추출
 promoted_df = df[df['티어 변동'].isin(['승급'])]
@@ -126,7 +126,7 @@ with col1:
         st.text(format_player_list_by_tier(irregular_df, 'irregular'))
 
 with col2:
-    st.markdown("#### 📈 최고 승률")
+    st.markdown("#### 🏆 최고 승률")
     if highest_same_tier_wr_player is not None:
         p = highest_same_tier_wr_player
         st.markdown(f"**동티어(40전 이상)**: **{int(p['현재 티어'])}티어** {p['이름']} ({p['동티어 승률']})")
@@ -146,7 +146,7 @@ with col2:
         st.markdown("**하위티어(20전 이상)**: 해당 없음 (20경기 이상자 없음)")
         
 with col3:
-    st.markdown("#### 🎯 세부 지표")
+    st.markdown("#### 🎯 세부 지표 분석")
     p = most_matches_player
     st.markdown(f"**최다 경기**: **{int(p['현재 티어'])}티어** {p['이름']} ({p['총 경기수']} 경기)")
     p = highest_clutch_player
