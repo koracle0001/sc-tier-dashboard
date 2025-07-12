@@ -97,7 +97,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # 화면에 표시할 최종 데이터프레임
-display_columns = [col for col in df.columns if not col.endswith(('_numeric', '_경기수', '분류'))]
+display_columns = [col for col in df.columns if not col.endswith(('_numeric', '_경기수', '분류', '순서'))]
 display_df = df_sorted[display_columns]
 
 # 배경색과 숫자 서식만 Styler로 처리
