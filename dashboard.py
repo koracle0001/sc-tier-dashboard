@@ -310,7 +310,6 @@ with col2_sum:
         xaxis_title="", 
         yaxis_title="", 
         barmode='stack',
-        legend_title_text='분류', 
         height=500, 
         margin=dict(t=20),
         paper_bgcolor='white',  
@@ -318,6 +317,7 @@ with col2_sum:
         font=dict(color="black"),      
         legend=dict(
             title_text='분류',      # 범례 제목
+            title_font_color="black",
             font=dict(color="black") # 범례의 모든 글씨(제목 포함) 색상
         )
     )
