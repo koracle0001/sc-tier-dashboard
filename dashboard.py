@@ -291,7 +291,7 @@ with col1_sum:
 with col2_sum:
     st.markdown("<h3 style='text-align: center;'>티어별 인원 분포</h3>", unsafe_allow_html=True)
     
-    color_map = {'유효': '#636EFA', '평가유예': '#77dd77', '비활성화': 'lightgrey'}
+    color_map = {'유효': '#636EFA', '평가유예': '#77dd77', '비활성화': 'darkgrey'}
     
     fig = px.bar(
         tier_distribution, x=tier_distribution.index, y=tier_distribution.columns,
@@ -300,21 +300,33 @@ with col2_sum:
     )
     
     fig.update_traces(
-        textposition='inside',
-        insidetextanchor='middle',  
-        textfont=dict(color='white', size=13, family='Arial Black'),  
-        selector=dict(type='bar')
+        textposition='outside', textfont=dict(color='black', size=12), selector=dict(type='bar')
     )
     fig.for_each_trace(lambda t: t.update(texttemplate = ["" if v == 0 else f"{v:,.0f}" for v in t.y]))
     
+    max_y_value = tier_distribution.sum(axis=1).max()
+
     fig.update_layout(
-        xaxis_title="", yaxis_title="", barmode='stack',
-        legend_title_text='분류', height=500, margin=dict(t=20),
-        font=dict(color="black")
+        xaxis_title="", 
+        yaxis_title="", 
+        barmode='stack',
+        legend_title_text='분류', 
+        height=500, 
+        margin=dict(t=20),
+        paper_bgcolor='white',  
+        plot_bgcolor='white',   
+        font=dict(color="black")  
     )
-    fig.update_xaxes(type='category', tickangle=0, tickfont=dict(size=12))
-    fig.update_yaxes(visible=False) 
+    
+    fig.update_xaxes(
+        type='category', 
+        tickangle=0, 
+        tickfont=dict(size=12) 
+    )
+    fig.update_yaxes(
+        visible=False, 
+        range=[0, max_y_value * 1.25] 
+    )
     
     config = {'staticPlot': True}
     st.plotly_chart(fig, use_container_width=True, config=config)
-
