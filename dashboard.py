@@ -133,9 +133,11 @@ with col3:
     p = most_matches_player
     st.markdown(f"**최다 경기**: **{int(p['현재 티어'])}티어** {p['이름']} ({p['총 경기수']} 경기)")
     p = highest_clutch_player
-    st.markdown(f"**최고 클러치**: **{int(p['현재 티어'])}티어** {p['이름']} ({p['클러치']:.2f})")
+    # [오류 수정] 값을 float으로 변환 후 서식 적용
+    st.markdown(f"**최고 클러치**: **{int(p['현재 티어'])}티어** {p['이름']} ({float(p['클러치']):.2f})")
     p = highest_hypocrisy_player
-    st.markdown(f"**최고 표리부동**: **{int(p['현재 티어'])}티어** {p['이름']} ({p['표리부동']:.2f})")
+    # [오류 수정] 값을 float으로 변환 후 서식 적용
+    st.markdown(f"**최고 표리부동**: **{int(p['현재 티어'])}티어** {p['이름']} ({float(p['표리부동']):.2f})")
 
 # --- 요약 통계 ---
 st.divider()
