@@ -149,7 +149,7 @@ top_5_matches = valid_players_df.sort_values(by='총 경기수_numeric_safe', as
 top_5_clutch = valid_players_df.sort_values(by='클러치_numeric_safe', ascending=False).head(5)
 top_5_hypocrisy = valid_players_df.sort_values(by='표리부동_numeric_safe', ascending=False).head(5)
 
-col1, col2, col3 = st.columns([1.4, 2.6, 2])
+col1, col2, col3 = st.columns([1.4, 2.8, 1.8])
 
 with col1:
     st.markdown("#### ✒️ 티어 변동")
@@ -221,11 +221,15 @@ with col2:
  
 with col3:
     st.markdown("#### ℹ️ 지표 설명")
+    
     st.info(
         """
-        - **이레귤러**: 특정상황에서 티어 내 강자를 의미합니다. (순위 무관)
-        - **클러치**: 스폰 게임 대비 중요 경기 기대 승률을 나타냅니다.(높을 수록 큰 경기에 강함)
-        - **표리부동**: wwe/ufc 비율을 나타냅니다. (높을 수록 변수대처 능력이 떨어지거나, 빌드수행력이 떨어짐)
+        - **이레귤러**: 특정상황에서 티어 내 강자를 의미합니다.
+          <br>(티어 내 순위와는 무관)
+        - **클러치**: 스폰 게임 대비 중요 경기 기대 승률을 나타냅니다.
+          <br>(높을 수록 큰 경기에 강함)
+        - **표리부동**: wwe/ufc 비율을 나타냅니다.
+          <br>(높을 수록 변수대처 능력이 떨어지거나, 빌드수행력이 떨어짐)
         """
     )
 
