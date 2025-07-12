@@ -244,11 +244,11 @@ with col3:
 
     st.markdown("#### ⚙️ 개선 작업중")
     st.markdown("""
-    <div style="background-color: #fffbe6; border-left: 5px solid #ffffcc; padding: 10px; border-radius: 5px; margin: 10px 0;">
-        <p style="font-weight: bold; margin-bottom: 10px;"> (8월 내 적용예정, 테스트 중)</p>
-        <ul style="list-style-position: inside; padding-left: 0; margin-bottom: 0;">
-            <li>특정 플레이어의 상세로그 공개에 관한 프로세스를 준비중입니다.</li>
-            <li>요청이 많은 순서대로 공개할 수 있도록 하겠습니다.</li>
+    <div style="background-color: #f0fff0; border-left: 5px solid #28a745; padding: 12px; border-radius: 5px; margin: 10px 0;">
+        <h5 style="margin-top: 0; margin-bottom: 12px; font-weight: bold;">⚙️ 개선작업 (8월 내 적용예정, 테스트 중)</h5>
+        <ul style="list-style-type: none; padding-left: 5px; margin-bottom: 0;">
+            <li style="margin-bottom: 5px;">- 특정 플레이어의 상세로그 공개에 관한 프로세스를 준비중입니다.</li>
+            <li>- 요청이 많은 순서대로 공개할 수 있도록 하겠습니다.</li>
         </ul>
     </div>
     """, unsafe_allow_html=True)
