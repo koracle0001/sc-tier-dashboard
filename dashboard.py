@@ -69,9 +69,12 @@ display_df = df[display_columns]
 st.header('밸런스 티어표')
 styled_df = display_df.style.apply(highlight_rows, axis=1) \
                           .set_properties(**{'text-align': 'center'}) \
-                          .format({'클러치': "{:.2f}", '표리부동': "{:.2f}"})
-
+                          .format({
+                              '클러치': lambda x: f'{x:.2f}' if isinstance(x, (int, float)) else x,
+                              '표리부동': lambda x: f'{x:.2f}' if isinstance(x, (int, float)) else x
+                          })
 st.dataframe(styled_df, use_container_width=True)
+
 
 # --- 기간 내 주요 선수 ---
 st.divider()
