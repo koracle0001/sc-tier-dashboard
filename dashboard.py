@@ -178,8 +178,7 @@ with col1:
     st.markdown(f"##### 비활성화 플레이어: **{inactive_players_count}**명")
 
 with col2:
-    st.write("#### 티어별 인원 분포")
-    
+
     color_map = {'유효': '#636EFA', '평가유예': 'lightgrey', '비활성화': 'black'}
     
     fig = px.bar(
@@ -192,9 +191,8 @@ with col2:
     )
     
     fig.update_traces(
-        textposition='inside',
-        insidetextanchor='middle', 
-        textfont=dict(color='white', size=13), 
+        textposition='outside',  
+        textfont=dict(color='black'),  
         selector=dict(type='bar')
     )
     # 값이 0인 막대에서는 텍스트를 표시하지 않음
@@ -208,13 +206,12 @@ with col2:
         barmode='stack',
         legend_title_text='분류',
         yaxis=dict(visible=False),
-        height=500 
+        height=500
     )
     fig.update_xaxes(type='category', tickangle=0, tickfont=dict(color='black', size=12))
     
     config = {'staticPlot': True}
     st.plotly_chart(fig, use_container_width=True, config=config)
-
 
 
 
