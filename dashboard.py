@@ -134,7 +134,7 @@ st.dataframe(styled_df, use_container_width=True, hide_index=True)
 
 # --- 기간 내 주요 이슈 ---
 st.divider()
-st.header('주요 이슈 요약')
+st.header('📌 주요 이슈 요약')
 
 # 데이터 추출
 promoted_df = df[df['티어 변동'].isin(['승급'])]
@@ -180,7 +180,7 @@ with col1:
         st.text(format_player_list_by_tier(irregular_df, 'irregular'))
 
 with col2:
-    st.markdown("#### 📋 세부 지표 분석 (유효 플레이어 기준!)")
+    st.markdown("#### 📋 세부 지표 분석 (유효 플레이어 기준)")
 
     st.markdown("<h5 style='margin-top: 1rem; margin-bottom: 0.5rem;'>🏆 최고 승률 TOP 3</h5>", unsafe_allow_html=True)
     sub_col1, sub_col2, sub_col3 = st.columns(3)
