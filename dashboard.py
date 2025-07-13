@@ -184,15 +184,15 @@ with col2:
 
     st.markdown("<h5 style='margin-top: 1rem; margin-bottom: 0.5rem;'>🏆 최고 승률 Top 3</h5>", unsafe_allow_html=True)
     sub_col1, sub_col2, sub_col3 = st.columns(3)
-    display_win_rate_top5(sub_col1, top5_highest_same, "동티어승률(40전 이상)", "동티어")
-    display_win_rate_top5(sub_col2, top5_highest_higher, "상위티어승률(20전 이상)", "상위티어")
-    display_win_rate_top5(sub_col3, top5_highest_lower, "하위티어승률(20전 이상)", "하위티어")
+    display_win_rate_top5(sub_col1, top5_highest_same, "vs 동티어승률(40전⬆️)", "동티어")
+    display_win_rate_top5(sub_col2, top5_highest_higher, "vs 상위티어승률(20전⬆️)", "상위티어")
+    display_win_rate_top5(sub_col3, top5_highest_lower, "vs 하위티어승률(20전⬆️)", "하위티어")
 
     st.markdown("<h5 style='margin-top: 1.5rem; margin-bottom: 0.5rem;'>💀 최저 승률 Top 3</h5>", unsafe_allow_html=True)
     sub_col1, sub_col2, sub_col3 = st.columns(3)
-    display_win_rate_top5(sub_col1, top5_lowest_same, "동티어승률(40전 이상)", "동티어")
-    display_win_rate_top5(sub_col2, top5_lowest_higher, "상위티어승률(20전 이상)", "상위티어")
-    display_win_rate_top5(sub_col3, top5_lowest_lower, "하위티어승률(20전 이상)", "하위티어")
+    display_win_rate_top5(sub_col1, top5_lowest_same, "vs 동티어승률(40전⬆️)", "동티어")
+    display_win_rate_top5(sub_col2, top5_lowest_higher, "vs 상위티어승률(20전⬆️)", "상위티어")
+    display_win_rate_top5(sub_col3, top5_lowest_lower, "vs 하위티어승률(20전⬆️)", "하위티어")
 
     st.markdown("---")
     sub_col1, sub_col2, sub_col3 = st.columns(3)
