@@ -182,13 +182,13 @@ with col1:
 with col2:
     st.markdown("#### 📋 세부 지표 분석 (유효 플레이어 기준)")
 
-    st.markdown("<h5 style='margin-top: 1rem; margin-bottom: 0.5rem;'>🏆 최고 승률 Top 3</h5>", unsafe_allow_html=True)
+    st.markdown("<h5 style='margin-top: 1rem; margin-bottom: 0.5rem;'>🏆 최고 승률 TOP 3</h5>", unsafe_allow_html=True)
     sub_col1, sub_col2, sub_col3 = st.columns(3)
     display_win_rate_top5(sub_col1, top5_highest_same, "vs 동티어승률(40전⬆️)", "동티어")
     display_win_rate_top5(sub_col2, top5_highest_higher, "vs 상위티어승률(20전⬆️)", "상위티어")
     display_win_rate_top5(sub_col3, top5_highest_lower, "vs 하위티어승률(20전⬆️)", "하위티어")
 
-    st.markdown("<h5 style='margin-top: 1.5rem; margin-bottom: 0.5rem;'>💀 최저 승률 Top 3</h5>", unsafe_allow_html=True)
+    st.markdown("<h5 style='margin-top: 1.5rem; margin-bottom: 0.5rem;'>💀 최저 승률 TOP 3</h5>", unsafe_allow_html=True)
     sub_col1, sub_col2, sub_col3 = st.columns(3)
     display_win_rate_top5(sub_col1, top5_lowest_same, "vs 동티어승률(40전⬆️)", "동티어")
     display_win_rate_top5(sub_col2, top5_lowest_higher, "vs 상위티어승률(20전⬆️)", "상위티어")
@@ -199,15 +199,15 @@ with col2:
 
     with sub_col1:
         matches_texts = [f"{i+1}. **{int(row['현재 티어'])}티어** {row['이름']} ({int(row['총 경기수'])} 경기)" for i, (_, row) in enumerate(top_5_matches.iterrows())]
-        st.markdown("💪 **최다 경기 Top 5**<br>" + "<br>".join(matches_texts), unsafe_allow_html=True)
+        st.markdown("💪 **최다 경기 TOP 5**<br>" + "<br>".join(matches_texts), unsafe_allow_html=True)
 
     with sub_col2:
         clutch_texts = [f"{i+1}. **{int(row['현재 티어'])}티어** {row['이름']} ({float(row['클러치']):.2f})" for i, (_, row) in enumerate(top_5_clutch.iterrows())]
-        st.markdown("🎯 **최고 클러치 Top 5**<br>" + "<br>".join(clutch_texts), unsafe_allow_html=True)
+        st.markdown("🎯 **최고 클러치 TOP 5**<br>" + "<br>".join(clutch_texts), unsafe_allow_html=True)
 
     with sub_col3:
         hypocrisy_texts = [f"{i+1}. **{int(row['현재 티어'])}티어** {row['이름']} ({float(row['표리부동']):.2f})" for i, (_, row) in enumerate(top_5_hypocrisy.iterrows())]
-        st.markdown("🤔 **최고 표리부동 Top 5**<br>" + "<br>".join(hypocrisy_texts), unsafe_allow_html=True)
+        st.markdown("🤔 **최고 표리부동 TOP 5**<br>" + "<br>".join(hypocrisy_texts), unsafe_allow_html=True)
  
 with col3:
     st.markdown("#### ℹ️ 지표 설명")
