@@ -80,7 +80,7 @@ def display_win_rate_top5(column, dataframe, stat_name_kor, stat_name_eng):
 st.title('⭐ 스타크래프트 여캠 밸런스 티어표')
 st.markdown("""
 <div style="text-align: left;">
-    <p style="font-size: 1.1em; margin-bottom: 0;"><b>데이터 갱신일: 2025-07-13</b></p>
+    <p style="font-size: 1.1em; margin-bottom: 0;"><b>데이터 갱신일: 2025-07-15</b></p>
     <p style="margin-bottom: 0.1em;">평가기간: 2025-05-24 ~ 2025-07-16</p>
     <p style="font-size: 0.9em;">제작자: UnKn0wn1</p>
 </div>
@@ -178,7 +178,8 @@ with col1:
     if '상태' in df.columns:
         st.markdown("##### ⁉️ 이레귤러")
         st.text(format_player_list_by_tier(irregular_df, 'irregular'))
-
+    st.markdown("*※ 테스트메세지")
+    st.markdown("*121233131ㅇ")
 with col2:
     st.markdown("#### 📋 세부 지표 분석 (유효 플레이어 기준)")
 
