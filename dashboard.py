@@ -178,8 +178,8 @@ with col1:
     if '상태' in df.columns:
         st.markdown("##### ⁉️ 이레귤러")
         st.text(format_player_list_by_tier(irregular_df, 'irregular'))
-    st.markdown("*※ 테스트메세지")
-    st.markdown("*121233131ㅇ")
+    st.markdown("※ 누락된 인원은 지속적으로 확인/갱신중입니다.<br>유스도 가능한 반영하였습니다.")
+
 with col2:
     st.markdown("#### 📋 세부 지표 분석 (유효 플레이어 기준)")
 
