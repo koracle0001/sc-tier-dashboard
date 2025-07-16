@@ -220,7 +220,7 @@ with col1:
     # 안내 문구
     st.markdown("※ 누락된 인원은 지속적으로 확인/갱신중입니다.  \n유스도 가능한 반영하였습니다.")
 with col2:
-    st.markdown("#### 📋 세부 지표 분석 (유효 플레이어 기준!)")
+    st.markdown("#### 📋 세부 지표 분석 (유효 플레이어 기준)")
 
     st.markdown("<h5 style='margin-top: 1rem; margin-bottom: 0.5rem;'>🏆 최고 승률 TOP 3</h5>", unsafe_allow_html=True)
     sub_col1, sub_col2, sub_col3 = st.columns(3)
