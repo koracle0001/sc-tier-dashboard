@@ -121,14 +121,12 @@ st.markdown("""
 display_columns = [col for col in df.columns if not col.endswith(('_numeric', '_경기수', '분류', '순서'))]
 display_df = df_sorted[display_columns]
 
-# 배경색과 숫자 서식만 Styler로 처리
 styled_df = display_df.style.apply(highlight_rows, axis=1) \
                           .format({
                               '클러치': lambda x: f'{x:.2f}' if isinstance(x, (int, float)) else x,
                               '표리부동': lambda x: f'{x:.2f}' if isinstance(x, (int, float)) else x
                           })
 
-# 최종적으로 st.dataframe으로 표를 표시
 st.dataframe(styled_df, use_container_width=True, hide_index=True)
 
 
@@ -172,12 +170,43 @@ col1, col2, col3 = st.columns([1.4, 2.8, 1.8])
 with col1:
     st.markdown("#### ✒️ 티어 변동")
     st.markdown("##### 📈 승급")
-    st.text(format_player_list_by_tier(promoted_df, 'promotion'))
+    # 승급자 목록을 '현재 티어' 기준으로 그룹화
+    promoted_grouped = promoted_df.sort_values(by='현재 티어').groupby('현재 티어', sort=False)
+    
+    # 그룹화된 데이터를 리스트로 변환
+    promo_groups = [group for _, group in promoted_grouped]
+
+    # 승급자가 없을 경우 '없음'으로 표시
+    if not promo_groups:
+        st.text("없음")
+    else:
+        promo_col1, promo_col2 = st.columns(2)
+        
+        for i, group in enumerate(promo_groups):
+            player_texts = []
+            for _, row in group.iterrows():
+                text = f"{row['이름']} ({int(row['이전 티어'])}티어 → {int(row['현재 티어'])}티어)"
+                player_texts.append(text)
+            
+            output_text = ", ".join(player_texts)
+            
+            if i % 2 == 0:
+                with promo_col1:
+                    st.markdown(f"<div style='margin-bottom: 8px;'>{output_text}</div>", unsafe_allow_html=True)
+            else:
+                with promo_col2:
+                    st.markdown(f"<div style='margin-bottom: 8px;'>{output_text}</div>", unsafe_allow_html=True)
+
+    # 강등자 목록 표시
     st.markdown("##### 📉 강등")
     st.text(format_player_list_by_tier(demoted_df, 'promotion'))
-    if '상태' in df.columns:
+
+    # 이레귤러 목록 표시
+    if '상태' in df.columns and not irregular_df.empty:
         st.markdown("##### ⁉️ 이레귤러")
         st.text(format_player_list_by_tier(irregular_df, 'irregular'))
+        
+    # 안내 문구
     st.markdown("※ 누락된 인원은 지속적으로 확인/갱신중입니다.  \n유스도 가능한 반영하였습니다.")
 
 with col2:
