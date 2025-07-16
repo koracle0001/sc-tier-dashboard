@@ -51,8 +51,13 @@ def classify_player(row):
 
     if row['티어 변동'] == '비활성화':
         return '비활성화'
-    elif row['티어 내 순위'] == '-':
+    
+    if '상태' in row and row['상태'] == '유스':
+        return '유스'
+    
+    if row['티어 내 순위'] == '-':
         return '평가유예'
+    
     else:
         return '유효'
     
@@ -97,7 +102,7 @@ for col in ['동티어 승률', '상위티어 승률', '하위티어 승률']:
     df[f'{col.split(" ")[0]}_경기수'] = df[col].astype(str).str.extract(r'\((\d+)\s*게임\)').astype(float).fillna(0)
 df['분류'] = df.apply(classify_player, axis=1)
 
-status_map = {'유효': 0, '평가유예': 1, '비활성화': 2}
+status_map = {'유효': 0, '유스': 1, '평가유예': 2, '비활성화': 3}
 df['정렬순서'] = df['분류'].map(status_map)
 
 df_sorted = df.sort_values(by=['정렬순서', '현재 티어'])
