@@ -161,7 +161,7 @@ top5_lowest_same = same_tier_filtered_df.sort_values(by='동티어 승률_numeri
 top5_lowest_higher = higher_tier_filtered_df[higher_tier_filtered_df['상위티어 승률_numeric'] > 0].sort_values(by='상위티어 승률_numeric', ascending=True).head(3)
 top5_lowest_lower = lower_tier_filtered_df[lower_tier_filtered_df['하위티어 승률_numeric'] > 0].sort_values(by='하위티어 승률_numeric', ascending=True).head(3)
 
-metrics_players_df = valid_players_df[~valid_players_df['현재 티어'].isin([0, 1, 9])]
+metrics_players_df = valid_players_df[~valid_players_df['현재 티어'].isin([0, 1, 7, 8, 9])]
 
 top_5_matches = valid_players_df.sort_values(by='총 경기수_numeric_safe', ascending=False).head(5)
 top_5_clutch = metrics_players_df.sort_values(by='클러치_numeric_safe', ascending=False).head(5)
