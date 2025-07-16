@@ -260,7 +260,7 @@ with col3:
             </li>
             <li style="margin-bottom: 8px;">
                 <strong>클러치</strong>: 스폰 게임 대비 중요 경기 기대 승률<br>
-                <span style="font-size: 0.9em;">(높을수록 큰 경기에 강함)</span>
+                <span style="font-size: 0.9em;">(높을수록 큰 경기에 강함, 2~6티어 한정으로 표기)</span>
             </li>
             <li>
                 <strong>표리부동</strong>: wwe/ufc 승리비율<br>
