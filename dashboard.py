@@ -316,7 +316,7 @@ col1_sum, col2_sum = st.columns([1, 2])
 with col1_sum:
     st.write("#### 평가요약")
     st.markdown(f"##### 평가기간: 54일")
-    st.markdown(f"##### 총 매치 수: 매치")
+    st.markdown(f"##### 총 경기 수: 5574 경기")
     st.write("#### 전체 인원 현황")
     st.markdown(f"##### 총 플레이어: **{total_players}**명")
     st.markdown(f"##### 유효 플레이어: **{valid_players_count}**명")
