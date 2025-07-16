@@ -172,14 +172,53 @@ col1, col2, col3 = st.columns([1.4, 2.8, 1.8])
 with col1:
     st.markdown("#### ✒️ 티어 변동")
     st.markdown("##### 📈 승급")
-    st.text(format_player_list_by_tier(promoted_df, 'promotion'))
+    MAX_LINE_LENGTH = 36
+
+    promoted_grouped = promoted_df.sort_values(by='현재 티어').groupby('현재 티어', sort=False)
+    
+    final_promotion_texts = []
+    
+    for _, group in promoted_grouped:
+        player_strings = []
+        for _, row in group.iterrows():
+            text = f"{row['이름']} ({int(row['이전 티어'])}티어 → {int(row['현재 티어'])}티어)"
+            player_strings.append(text)
+            
+        if not player_strings:
+            continue
+        
+        lines_for_this_tier = []
+        current_line = ""
+        for p_str in player_strings:
+            if not current_line:
+                current_line = p_str
+            elif len(current_line) + len(", ") + len(p_str) > MAX_LINE_LENGTH:
+                lines_for_this_tier.append(current_line) 
+                current_line = p_str  
+            else:
+                current_line += f", {p_str}" 
+        
+        lines_for_this_tier.append(current_line) 
+        
+        final_promotion_texts.append("\n".join(lines_for_this_tier))
+
+    # --- 최종 결과 출력 ---
+    if not final_promotion_texts:
+        st.text("없음")
+    else:
+        st.text("\n\n".join(final_promotion_texts))
+
+    # 강등자 목록 표시 
     st.markdown("##### 📉 강등")
     st.text(format_player_list_by_tier(demoted_df, 'promotion'))
-    if '상태' in df.columns:
+
+    # 이레귤러 목록 표시  
+    if '상태' in df.columns and not irregular_df.empty:
         st.markdown("##### ⁉️ 이레귤러")
         st.text(format_player_list_by_tier(irregular_df, 'irregular'))
+        
+    # 안내 문구
     st.markdown("※ 누락된 인원은 지속적으로 확인/갱신중입니다.  \n유스도 가능한 반영하였습니다.")
-
 with col2:
     st.markdown("#### 📋 세부 지표 분석 (유효 플레이어 기준)")
 
