@@ -206,7 +206,7 @@ with col1:
     if not final_promotion_texts:
         st.text("없음")
     else:
-        st.text("\n\n".join(final_promotion_texts))
+        st.text("\n".join(final_promotion_texts))
 
     # 강등자 목록 표시 
     st.markdown("##### 📉 강등")
