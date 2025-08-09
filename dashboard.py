@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 from collections import defaultdict
 import plotly.express as px 
@@ -279,15 +280,30 @@ with col3:
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("#### ⚙️ 개선 작업중")
-    st.markdown("""
-    <div style="background-color: #ffe4e1; border-left: 5px solid #ff69b4; padding: 10px; border-radius: 5px; margin: 5px 0; color: #31333F;">
-        <h5 style="margin-top: 0; margin-bottom: 8px; font-weight: bold;">(8월 내 적용예정, 테스트 중)</h5>
-        <ul style="list-style-type: none; padding-left: 5px; margin-bottom: 0;">
-            <li style="margin-bottom: 4px;"> 특정 플레이어의 상세로그 공개에 관한 프로세스를<br>준비중입니다.</li>
-            <li> 요청이 많은 순서대로 공개할 수 있도록 하겠습니다.</li>
-        </ul>
-    </div>
+    st.markdown("#### ✨ 상세 분석 대시보드")
+
+    PUBLIC_HTML_URL = "https://koracle0001.github.io/sc-tier-dashboard/"
+
+    st.markdown(f"""
+    <a href="{PUBLIC_HTML_URL}" target="_blank" style="text-decoration: none;">
+        <div style="
+            display: inline-block;
+            padding: 0.7em 1.2em;
+            color: white;
+            background-color: #ff4b4b;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            text-align: center;
+            border: 1px solid #ff4b4b;
+            transition: all 0.2s;
+        ">
+            🔍 인터랙티브 대시보드 바로가기
+        </div>
+    </a>
+    <p style="font-size: 0.9em; margin-top: 10px; color: #555;">
+        플레이어 검색, 능력치 비교, 기간별 점수 변화 등<br>
+        심층 분석이 가능한 동적 리포트 페이지로 이동합니다. (새 탭)
+    </p>
     """, unsafe_allow_html=True)
     
 # --- 요약 통계 ---
