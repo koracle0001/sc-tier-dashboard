@@ -4,6 +4,7 @@
     <head>
         <meta charset="utf-8" />
         <title>Interactive Dashboard</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
         <style>
             body { font-family: sans-serif; display: flex; flex-direction: column; height: 100vh; margin: 0; }
@@ -14,6 +15,27 @@
             .radar-container, .line-container { flex: 1; min-height: 0; }
             .radar-container { border-bottom: 1px solid #ccc; }
             .plotly-graph-div { width: 100%; height: 100%; }
+            @media (max-width: 768px) {
+                body { height: auto; }
+                .main-container {
+                    flex-direction: column;
+                }
+                .scatter-container, .details-container {
+                    flex: none;  
+                    width: 100%;  
+                    border-right: none;  
+                }
+                .scatter-container {
+                    height: 50vh; 
+                }
+                .details-container {
+                    height: 80vh;  
+                }
+                #playerSearch {
+                    font-size: 16px;  
+                }
+            }
+
         </style>
     </head>
     <body>
@@ -39,7 +61,7 @@
             const xAxisTickVals = ["2025-05-24", "2025-06-03", "2025-06-14", "2025-06-24", "2025-07-05", "2025-07-16"];
 
             const highlightColors = ['#EF553B', '#00CC96', '#FFA15A', '#636EFA'];
-            const highlightSymbols = ['star', 'circle', 'diamond-open', 'cross'];
+            const highlightSymbols = ['star', 'circle', 'diamond', 'square'];
 
             const scatterDiv = document.getElementById('scatter-plot');
             const radarDiv = document.getElementById('radar-chart');
@@ -65,7 +87,7 @@
                     { x: 0.95, y: 0.95, xref: 'paper', yref: 'paper', text: '재능있는 노력가', showarrow: false, font:{color:'grey', size:14} },
                     { x: 0.05, y: 0.95, xref: 'paper', yref: 'paper', text: '재능있는 한량', showarrow: false, font:{color:'grey', size:14} },
                     { x: 0.02, y: 0.02, xref: 'paper', yref: 'paper', text: '증명이 필요한 미생', showarrow: false, font:{color:'grey', size:14} },
-                    { x: 0.95, y: 0.05, xref: 'paper', yref: 'paper', text: '성실한 노력가', showarrow: false, font:{color:'grey', size:14} }
+                    { x: 0.95, y: 0.02, xref: 'paper', yref: 'paper', text: '성실한 노력가', showarrow: false, font:{color:'grey', size:14} }
                 ]
             };
             
