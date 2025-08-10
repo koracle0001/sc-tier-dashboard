@@ -169,12 +169,6 @@
                     else if (yRange < 20) { const mid = yMin + yRange / 2; yMin = mid - 10; yMax = mid + 10; }
                     else { const padding = yRange * 0.1; yMin -= padding; yMax += padding; }
 
-                    // 4. Y축 범위를 동적으로 다시 계산
-                    let yRange = yMax - yMin;
-                    if (yMin === Infinity || yMax === -Infinity) { /* No data */ }
-                    else if (yRange < 20) { const mid = yMin + yRange / 2; yMin = mid - 10; yMax = mid + 10; }
-                    else { const padding = yRange * 0.1; yMin -= padding; yMax += padding; }
-                    
                     const lineLayout = {
                         title: '개인별 점수 변동 추이',
                         yaxis: { title: '', showticklabels: false, showgrid: false, zeroline: false, showline: true, linecolor: 'black', linewidth: 2, range: [yMin, yMax], autorange: false },
