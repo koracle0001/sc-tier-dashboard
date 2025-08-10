@@ -150,44 +150,35 @@
 
                     // 라인 차트 업데이트  
                     const lineData = [];
-                    let yMin = Infinity, yMax = -Infinity;
-
                     selectedPlayers.forEach((player, i) => {
                         if (scoreProgression[player] && scoreProgression[player].y.length > 0) {
-                            const rawScores = scoreProgression[player].y;
-                            const playerMin = Math.min(...rawScores);
-                            const playerMax = Math.max(...rawScores);
-                            if (playerMin < yMin) yMin = playerMin;
-                            if (playerMax > yMax) yMax = playerMax;
-
-                            lineData.push({
-                                type: 'scatter', x: scoreProgression[player].x, y: rawScores,
-                                mode: 'lines+markers', name: player,
-                                line: { color: highlightColors[i % highlightColors.length] },
-                                hoverinfo: 'none' 
-                            });
+                            lineData.push({ type: 'scatter', x: scoreProgression[player].x, y: scoreProgression[player].y, mode: 'lines+markers', name: player, line: { color: highlightColors[i % highlightColors.length] }, hoverinfo: 'none' });
                         }
                     });
 
+                    let yMin = Infinity, yMax = -Infinity;
+                    lineData.forEach(trace => {
+                        const playerMin = Math.min(...trace.y);
+                        const playerMax = Math.max(...trace.y);
+                        if (playerMin < yMin) yMin = playerMin;
+                        if (playerMax > yMax) yMax = playerMax;
+                    });
+
                     let yRange = yMax - yMin;
-                    if (yMin === Infinity || yMax === -Infinity) {
-                        // 데이터 없음
-                    } else if (yRange < 20) {
-                        const mid = yMin + yRange / 2;
-                        yMin = mid - 10;
-                        yMax = mid + 10;
-                    } else {
-                        const padding = yRange * 0.1;
-                        yMin -= padding;
-                        yMax += padding;
-                    }
+                    if (yMin === Infinity || yMax === -Infinity) { /* No data */ }
+                    else if (yRange < 20) { const mid = yMin + yRange / 2; yMin = mid - 10; yMax = mid + 10; }
+                    else { const padding = yRange * 0.1; yMin -= padding; yMax += padding; }
+
+                    // 4. Y축 범위를 동적으로 다시 계산
+                    let yRange = yMax - yMin;
+                    if (yMin === Infinity || yMax === -Infinity) { /* No data */ }
+                    else if (yRange < 20) { const mid = yMin + yRange / 2; yMin = mid - 10; yMax = mid + 10; }
+                    else { const padding = yRange * 0.1; yMin -= padding; yMax += padding; }
                     
                     const lineLayout = {
-                        title: '개인별 점수변화 추이',
-                        yaxis: { title: '점수변화', showticklabels: false, showgrid: false, zeroline: false, showline: true, linecolor: 'black', linewidth: 2, range: [yMin, yMax], autorange: false},
-                        xaxis: { title: '경기 일자', type: 'date', range: [new Date(new Date(startDate).getTime() - 24 * 60 * 60 * 1000).toISOString().split('T')[0], 
-                                  new Date(new Date(endDate).getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0]], tickmode: 'array', tickvals: xAxisTickVals, tickformat: '%m/%d', showgrid: true,
-                                  gridcolor: '#E5E5E5', showline: true, linecolor: 'black', linewidth: 2, autorange: false },
+                        title: '개인별 점수 변동 추이',
+                        yaxis: { title: '', showticklabels: false, showgrid: false, zeroline: false, showline: true, linecolor: 'black', linewidth: 2, range: [yMin, yMax], autorange: false },
+                        xaxis: { title: '경기 일자', type: 'date', range: [new Date(new Date(startDate).getTime() - 24 * 60 * 60 * 1000).toISOString().split('T')[0], new Date(new Date(endDate).getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0]], tickmode: 'array', tickvals: xAxisTickVals, tickformat: '%m/%d', showgrid: true, gridcolor: '#E5E5E5', showline: true, linecolor: 'black', linewidth: 2, autorange: false },
                         showlegend: true,
                     };
                     Plotly.react(lineDiv, lineData, lineLayout);
