@@ -280,7 +280,7 @@ with col3:
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("#### ✨ 상세 분석 대시보드")
+    st.markdown("#### 📇 플레이어 상세분석 리포트")
 
     PUBLIC_HTML_URL = "https://koracle0001.github.io/sc-tier-dashboard/"
 
@@ -297,12 +297,12 @@ with col3:
             border: 1px solid #ff4b4b;
             transition: all 0.2s;
         ">
-            🔍 인터랙티브 대시보드 바로가기
+            🔍 상세분석 페이지로 바로가기
         </div>
     </a>
     <p style="font-size: 0.9em; margin-top: 10px; color: #555;">
         플레이어 검색, 능력치 비교, 기간별 점수 변화 등<br>
-        심층 분석이 가능한 동적 리포트 페이지로 이동합니다. (새 탭)
+        상세 분석이 가능한 페이지로 이동합니다. (새 탭)
     </p>
     """, unsafe_allow_html=True)
     
