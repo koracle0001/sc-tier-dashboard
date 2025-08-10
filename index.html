@@ -150,17 +150,27 @@
 
                     // 라인 차트 업데이트  
                     const lineData = [];
-                    selectedPlayers.forEach((player, i) => {
-                        if (scoreProgression[player] && scoreProgression[player].y.length > 0) {
+                    selectedPlayers.forEach((player, i) => {{
+                        if (scoreProgression[player] && scoreProgression[player].y.length > 0) {{
                             const pData = playerData.find(d => d.player === player);
                             if (!pData) return;
                             const initialScore = pData.initial_score;
-                            const baseline = 900;
-                            const scoreOffset = initialScore - baseline;
-                            const finalYValues = scoreProgression[player].y.map(delta => (delta + scoreOffset));
-                            lineData.push({ type: 'scatter', x: scoreProgression[player].x, y: finalYValues, mode: 'lines+markers', name: player, line: { color: highlightColors[i % highlightColors.length] }, hoverinfo: 'none' });
-                        }
-                    });
+                            const commonBaseline = 900;
+                            const finalYValues = scoreProgression[player].y.map((delta) => {{
+                                const actualScore = initialScore + delta;
+                                return actualScore - commonBaseline;
+                            }});
+                            lineData.push({{ 
+                                type: 'scatter', 
+                                x: scoreProgression[player].x, 
+                                y: finalYValues, 
+                                mode: 'lines+markers', 
+                                name: player, 
+                                line: {{ color: highlightColors[i % highlightColors.length] }}, 
+                                hoverinfo: 'none' 
+                            }});
+                        }}
+                    }});
 
                     let yMin = Infinity, yMax = -Infinity;
                     lineData.forEach(trace => {
