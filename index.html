@@ -15,33 +15,35 @@
             .radar-container, .line-container { flex: 1; min-height: 0; }
             .radar-container { border-bottom: 1px solid #ccc; }
             .plotly-graph-div { width: 100%; height: 100%; }
+
+            /* 모바일 반응형 CSS */
             @media (max-width: 768px) {
                 body { height: auto; }
                 .main-container {
                     flex-direction: column;
                 }
                 .scatter-container, .details-container {
-                    flex: none;  
-                    width: 100%;  
-                    border-right: none;  
+                    flex: none;
+                    width: 100%;
+                    border-right: none;
                 }
                 .scatter-container {
-                    height: 50vh; 
+                    height: 50vh;
                 }
                 .details-container {
-                    height: 80vh;  
+                    height: 80vh;
                 }
                 #playerSearch {
-                    font-size: 16px;  
+                    font-size: 16px; /* iOS 자동 확대 방지 */
                 }
             }
-
         </style>
     </head>
     <body>
         <div class="controls">
             <b>플레이어 검색 (최대 4명, 콤마(,)로 구분):</b>
-            <input type="text" id="playerSearch" size="50">
+            <input type="text" id="playerSearch" size="40">
+            <button id="searchButton" style="padding: 2px 8px;">검색</button>
         </div>
         <div class="main-container">
             <div id="scatter-plot" class="scatter-container"></div>
@@ -67,6 +69,7 @@
             const radarDiv = document.getElementById('radar-chart');
             const lineDiv = document.getElementById('line-chart');
             const searchInput = document.getElementById('playerSearch');
+            const searchButton = document.getElementById('searchButton'); // 검색 버튼 참조 추가
 
             const backgroundTrace = {
                 x: playerData.map(p => p.ap_score), y: playerData.map(p => p.clutch_val),
@@ -125,24 +128,26 @@
                             });
                         }
                     });
-                    Plotly.react(radarDiv, radarData, { title: '플레이어 능력치 비교', polar: { radialaxis: { visible: false, range: [0, 100] } }, showlegend: false });
+                    
+                    //  레이더 차트  
+                    Plotly.react(radarDiv, radarData, { 
+                        title: '플레이어 능력치 비교', 
+                        polar: { radialaxis: { visible: false, range: [0, 100] } }, 
+                        showlegend: true, 
+                        legend: {
+                            x: 0.5, y: -0.15, xanchor: 'center', orientation: 'h'
+                        }
+                    });
 
-                    // 동적 스케일링 로직 시작
-                    console.log("===== [DEBUG] Line Chart Update Started =====");
+                    // 라인 차트 업데이트  
                     const lineData = [];
-                    let yMin = Infinity;
-                    let yMax = -Infinity;
+                    let yMin = Infinity, yMax = -Infinity;
 
                     selectedPlayers.forEach((player, i) => {
                         if (scoreProgression[player] && scoreProgression[player].y.length > 0) {
-                            console.log(`[DEBUG] Processing player: ${player}`);
                             const rawScores = scoreProgression[player].y;
-                            console.log(`[DEBUG] Raw scores array for ${player}:`, rawScores);
-
                             const playerMin = Math.min(...rawScores);
                             const playerMax = Math.max(...rawScores);
-                            console.log(`[DEBUG] Calculated min/max for ${player}: ${playerMin}, ${playerMax}`);
-
                             if (playerMin < yMin) yMin = playerMin;
                             if (playerMax > yMax) yMax = playerMax;
 
@@ -154,50 +159,48 @@
                             });
                         }
                     });
-                    console.log(`[DEBUG] Final yMin/yMax after loop: ${yMin}, ${yMax}`);
 
                     let yRange = yMax - yMin;
-                    console.log(`[DEBUG] Initial yRange: ${yRange}`);
-
                     if (yMin === Infinity || yMax === -Infinity) {
-                        console.log("[DEBUG] No data to draw.");
+                        // 데이터 없음
                     } else if (yRange < 20) {
-                        console.log("[DEBUG] yRange is less than 20. Applying fixed padding.");
                         const mid = yMin + yRange / 2;
                         yMin = mid - 10;
                         yMax = mid + 10;
                     } else {
-                        console.log("[DEBUG] yRange is 20 or more. Applying proportional padding.");
                         const padding = yRange * 0.1;
                         yMin -= padding;
                         yMax += padding;
                     }
-                    console.log(`[DEBUG] Final Y-axis range with padding: [${yMin}, ${yMax}]`);
                     
                     const lineLayout = {
                         title: '개인별 점수변화 추이',
-                        yaxis: { title: '점수변화',  showticklabels: false, showgrid: false, zeroline: false, showline: true, linecolor: 'black', linewidth: 2, range: [yMin, yMax], autorange: false},
+                        yaxis: { title: '점수변화', showticklabels: false, showgrid: false, zeroline: false, showline: true, linecolor: 'black', linewidth: 2, range: [yMin, yMax], autorange: false},
                         xaxis: { title: '경기 일자', type: 'date', range: [new Date(new Date(startDate).getTime() - 24 * 60 * 60 * 1000).toISOString().split('T')[0], 
                                   new Date(new Date(endDate).getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0]], tickmode: 'array', tickvals: xAxisTickVals, tickformat: '%m/%d', showgrid: true,
                                   gridcolor: '#E5E5E5', showline: true, linecolor: 'black', linewidth: 2, autorange: false },
                         showlegend: true,
                     };
-
                     Plotly.react(lineDiv, lineData, lineLayout);
-                    console.log("===== [DEBUG] Line Chart Update Finished =====");
 
                 } else {
-                    // 검색된 플레이어가 없으면 안내 문구 표시
                     Plotly.react(radarDiv, [], {title: '플레이어를 검색하면 능력치 레이더가 표시됩니다.'});
                     Plotly.react(lineDiv, [], {title: '플레이어를 검색하면 점수 추이가 표시됩니다.'});
                 }
             }
- 
-            // 이벤트 리스너를 'input'에서 'change'로 변경
-            searchInput.addEventListener('change', e => {
-                const names = e.target.value.split(',').map(name => name.trim()).filter(Boolean);
+            
+            // 검색 로직 함수화 및 이벤트 리스너 수정 
+            function performSearch() {
+                const names = searchInput.value.split(',').map(name => name.trim()).filter(Boolean);
                 updateCharts(names.slice(0, 4));
-            });
+                searchInput.blur(); // 검색 후 입력창 포커스 해제 (키보드 내리기)
+            }
+
+            // '검색' 버튼 클릭 시 검색 실행
+            searchButton.addEventListener('click', performSearch);
+            
+            // 입력창에서 'Enter'나 '완료' 등을 눌렀을 때도 검색 실행 (change 이벤트)
+            searchInput.addEventListener('change', performSearch);
             
             // 초기 로딩 시 빈 차트 호출
             updateCharts([]);
