@@ -121,14 +121,14 @@
 
                     const lineLayout = {
                         title: '개인별 점수 변동 추이',
-                        yaxis: { title: '', showticklabels: false, showgrid: false, zeroline: false, showline: true, linecolor: 'black', linewidth: 2, range: finalYAxisRange, autorange: false },
+                        yaxis: { title: '점수', showticklabels: false, showgrid: false, zeroline: false, showline: true, linecolor: 'black', linewidth: 2, range: finalYAxisRange, autorange: false },
                         xaxis: { title: '경기 일자', type: 'date', range: [new Date(new Date(startDate).getTime() - 24 * 60 * 60 * 1000).toISOString().split('T')[0], new Date(new Date(endDate).getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0]], tickmode: 'array', tickvals: xAxisTickVals, tickformat: '%m/%d', showgrid: true, gridcolor: '#E5E5E5', showline: true, linecolor: 'black', linewidth: 2, autorange: false },
                         showlegend: true,
                     };
                     Plotly.react(lineDiv, lineData, lineLayout);
                 } else {
                     Plotly.react(radarDiv, [], {title: '플레이어를 검색하면 능력치 레이더가 표시됩니다.'});
-                    Plotly.react(lineDiv, [], {title: '플레이어를 검색하면 점수 추이가 표시됩니다.'});
+                    Plotly.react(lineDiv, [], {title: '플레이어를 검색하면 점수 변동 추이가 표시됩니다.'});
                 }
             }
             
