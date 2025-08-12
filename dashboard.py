@@ -20,7 +20,7 @@ def highlight_rows(row):
     if row['티어 변동'] == '강등':
         return ['background-color: #FFEC8B; color: black;'] * len(row)
  
-    if row['티어 변동'] in ['유예']:
+    if row['티어 변동'] in ['평가유예']:
         style = 'background-color: #E5E4E2; color: black;'
                
     return [style] * len(row)
