@@ -151,12 +151,13 @@ promoted_df = df[df['티어 변동'].isin(['승급'])]
 demoted_df = df[df['티어 변동'] == '강등']
 
 df['총 경기수_numeric_safe'] = pd.to_numeric(df['총 경기수'], errors='coerce')
-df['클러치_numeric_safe'] = pd.to_numeric(df['클러치'], errors='coerce')
+df['클러치_numeric_safe'] = pd.to_numeric(df['클러치'].astype(str).str.extract(r'(\d+\.?\d*)')[0], errors='coerce')
 
 valid_players_df = df[~df['티어 변동'].isin(['평가유예', '비활성화'])]
 if not valid_players_df.empty:
     most_matches_player = valid_players_df.loc[valid_players_df['총 경기수_numeric_safe'].idxmax()]
-    highest_clutch_player = valid_players_df.loc[valid_players_df['클러치_numeric_safe'].idxmax()]
+    if valid_players_df['클러치_numeric_safe'].notna().any():
+        highest_clutch_player = valid_players_df.loc[valid_players_df['클러치_numeric_safe'].idxmax()]
 else:
     most_matches_player = None
     highest_clutch_player = None
@@ -178,7 +179,7 @@ metrics_players_df = metrics_players_df.dropna(subset=['클러치_numeric_safe']
 top_5_matches = valid_players_df.sort_values(by='총 경기수_numeric_safe', ascending=False).head(5)
 top_5_clutch = metrics_players_df.sort_values(by='클러치_numeric_safe', ascending=False).head(5)
 
-col1, col2, col3 = st.columns([1.8, 2.8, 1.4])
+col1, col2, col3 = st.columns([1.6, 2.8, 1.6])
 
 with col1:
     st.markdown("#### ✒️ 티어 변동")
