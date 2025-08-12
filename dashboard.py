@@ -14,15 +14,15 @@ def highlight_rows(row):
     if row['티어 변동'] == '비활성화':
         return ['background-color: black; color: white;'] * len(row)
 
+    if row['티어 변동'] == '평가유예':
+        return ['background-color: #E5E4E2; color: black;'] * len(row)
+
     if row['티어 변동'] == '승급':
         return ['background-color: lightblue; color: black;'] * len(row)
     
     if row['티어 변동'] == '강등':
         return ['background-color: #FFEC8B; color: black;'] * len(row)
- 
-    if row['티어 변동'] in ['평가유예']:
-        style = 'background-color: #E5E4E2; color: black;'
-               
+                
     return [style] * len(row)
 
 def format_player_list_by_tier(player_df, format_type):
@@ -44,20 +44,6 @@ def format_player_list_by_tier(player_df, format_type):
         output_lines.append(", ".join(grouped[tier]))
         
     return "\n".join(output_lines)
-
-def classify_player(row):
-
-    if row['티어 변동'] == '비활성화':
-        return '비활성화'
-    
-    if '상태' in row and row['상태'] == '유스':
-        return '유스'
-    
-    if row['티어 내 순위'] == '-':
-        return '평가유예'
-    
-    else:
-        return '유효'
     
 def display_win_rate_top5(column, dataframe, stat_name_kor, stat_name_eng):
     with column:
@@ -102,15 +88,29 @@ except ValueError as e:
     # 시트가 없을 경우, 빈 데이터프레임을 생성하여 에러 방지
     top_5_gainers_df = pd.DataFrame(columns=['티어', '종족', '선수이름', '점수상승폭'])
 
+# 승률 및 경기수 숫자 데이터 추출
 for col in ['동티어 승률', '상위티어 승률', '하위티어 승률']:
-    df[f'{col}_numeric'] = df[col].astype(str).str.extract(r'(\d+\.?\d*)').astype(float).fillna(0)
-    df[f'{col.split(" ")[0]}_경기수'] = df[col].astype(str).str.extract(r'\((\d+)\s*게임\)').astype(float).fillna(0)
-df['분류'] = df.apply(classify_player, axis=1)
+    df[f'{col}_numeric'] = pd.to_numeric(df[col].astype(str).str.extract(r'(\d+\.?\d*)')[0], errors='coerce').fillna(0)
+    df[f'{col.split(" ")[0]}_경기수'] = pd.to_numeric(df[col].astype(str).str.extract(r'\((\d+)\s*게임\)')[0], errors='coerce').fillna(0)
 
-status_map = {'유효': 0, '유스': 1, '평가유예': 2, '비활성화': 3}
-df['정렬순서'] = df['분류'].map(status_map)
+# 정렬 키 1: 메인 그룹 (일반 그룹 / 평가유예 / 비활성화)
+def get_primary_group(tier_change_value):
+    if tier_change_value == '평가유예':
+        return 1
+    if tier_change_value == '비활성화':
+        return 2
+    return 0 # 그 외 (유효, 유스, 승급, 강등 등)
+df['sort_key_1'] = df['티어 변동'].apply(get_primary_group)
 
-df_sorted = df.sort_values(by=['정렬순서', '현재 티어'])
+# 정렬 키 2: 숫자 티어 (e.g., '3A' -> 3)
+df['sort_key_2'] = df['현재 티어'].apply(lambda x: int(str(x).replace('A', '')))
+
+# 정렬 키 3: 티어 내 A티어 우선 정렬 (A티어는 0, 일반은 1)
+df['sort_key_3'] = df['현재 티어'].apply(lambda x: 0 if 'A' in str(x) else 1)
+
+# 최종 정렬
+df_sorted = df.sort_values(by=['sort_key_1', 'sort_key_2', 'sort_key_3'])
+
 
 st.header('밸런스 티어표')
 st.markdown("""
@@ -127,19 +127,17 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# 화면에 표시할 최종 데이터프레임
-display_columns = [col for col in df.columns if not col.endswith(('_numeric', '_경기수', '분류', '순서'))]
+display_columns = [
+    col for col in df.columns 
+    if not col.endswith(('_numeric', '_경기수')) and not col.startswith('sort_key_') and col != '상태'
+]
+
 display_df = df_sorted[display_columns]
 
-# 배경색과 숫자 서식만 Styler로 처리
 styled_df = display_df.style.apply(highlight_rows, axis=1) \
-                          .format({
-                              '클러치': lambda x: f'{x:.2f}' if isinstance(x, (int, float)) else x,
-                          })
+                          .format({'클러치': lambda x: f'{x:.2f}' if isinstance(x, (int, float)) else x})
 
-# 최종적으로 st.dataframe으로 표를 표시
 st.dataframe(styled_df, use_container_width=True, hide_index=True)
-
 
 # --- 기간 내 주요 이슈 ---
 st.divider()
@@ -152,9 +150,13 @@ demoted_df = df[df['티어 변동'] == '강등']
 df['총 경기수_numeric_safe'] = pd.to_numeric(df['총 경기수'], errors='coerce')
 df['클러치_numeric_safe'] = pd.to_numeric(df['클러치'], errors='coerce')
 
-valid_players_df = df[df['분류'] == '유효']
-most_matches_player = valid_players_df.loc[valid_players_df['총 경기수_numeric_safe'].idxmax()]
-highest_clutch_player = valid_players_df.loc[valid_players_df['클러치_numeric_safe'].idxmax()]
+valid_players_df = df[~df['티어 변동'].isin(['평가유예', '비활성화'])]
+if not valid_players_df.empty:
+    most_matches_player = valid_players_df.loc[valid_players_df['총 경기수_numeric_safe'].idxmax()]
+    highest_clutch_player = valid_players_df.loc[valid_players_df['클러치_numeric_safe'].idxmax()]
+else:
+    most_matches_player = None
+    highest_clutch_player = None
 
 same_tier_filtered_df = valid_players_df[valid_players_df['동티어_경기수'] >= 40]
 top5_highest_same = same_tier_filtered_df.sort_values(by='동티어 승률_numeric', ascending=False).head(3)
@@ -167,7 +169,7 @@ top5_lowest_same = same_tier_filtered_df.sort_values(by='동티어 승률_numeri
 top5_lowest_higher = higher_tier_filtered_df[higher_tier_filtered_df['상위티어 승률_numeric'] > 0].sort_values(by='상위티어 승률_numeric', ascending=True).head(3)
 top5_lowest_lower = lower_tier_filtered_df[lower_tier_filtered_df['하위티어 승률_numeric'] > 0].sort_values(by='하위티어 승률_numeric', ascending=True).head(3)
 
-metrics_players_df = valid_players_df[~valid_players_df['현재 티어'].isin([0, 1, 7, 8, 9])]
+metrics_players_df = valid_players_df[~valid_players_df['현재 티어'].astype(str).str.contains('9|8|7|1|0')]
 
 top_5_matches = valid_players_df.sort_values(by='총 경기수_numeric_safe', ascending=False).head(5)
 top_5_clutch = metrics_players_df.sort_values(by='클러치_numeric_safe', ascending=False).head(5)
@@ -179,18 +181,13 @@ with col1:
     st.markdown("##### 📈 승급")
     MAX_LINE_LENGTH = 36
 
-    promoted_grouped = promoted_df.sort_values(by='현재 티어').groupby('현재 티어', sort=False)
+    promoted_grouped = promoted_df.sort_values(by='sort_key_2').groupby('sort_key_2', sort=False)  
     
     final_promotion_texts = []
     
     for _, group in promoted_grouped:
-        player_strings = []
-        for _, row in group.iterrows():
-            text = f"{row['이름']} ({int(row['이전 티어'])}티어 → {int(row['현재 티어'])}티어)"
-            player_strings.append(text)
-            
-        if not player_strings:
-            continue
+        player_strings = [f"{row['이름']} ({int(row['이전 티어'])}티어 → {row['현재 티어']}티어)" for _, row in group.iterrows()]
+        if not player_strings: continue
         
         lines_for_this_tier = []
         current_line = ""
@@ -299,15 +296,22 @@ st.divider()
 st.header('📊 요약 통계')
 
 total_players = len(df)
-inactive_players_count = (df['분류'] == '비활성화').sum()
-pending_players_count = (df['분류'] == '평가유예').sum()
+inactive_players_count = (df['티어 변동'] == '비활성화').sum()
+pending_players_count = (df['티어 변동'] == '평가유예').sum()
 valid_players_count = total_players - inactive_players_count - pending_players_count
 
-tier_distribution = df.groupby(['현재 티어', '분류']).size().unstack(fill_value=0)
-desired_order = ['유효', '평가유예', '비활성화']
-tier_distribution = tier_distribution.reindex(columns=[col for col in desired_order if col in tier_distribution.columns])
+def get_chart_classification(row):
+    if row['티어 변동'] == '비활성화': return '비활성화'
+    if row['티어 변동'] == '평가유예': return '평가유예'
+    if '9' in str(row['현재 티어']): return '유스'
+    return '유효'
+df['chart_분류'] = df.apply(get_chart_classification, axis=1)
+
+tier_distribution = df.groupby(['sort_key_2', 'chart_분류']).size().unstack(fill_value=0)
+desired_order = ['유효', '유스', '평가유예', '비활성화']
+tier_distribution = tier_distribution.reindex(columns=[col for col in desired_order if col in tier_distribution.columns], fill_value=0)
 tier_distribution = tier_distribution.sort_index()
-tier_distribution.index = tier_distribution.index.astype(int).astype(str) + "티어"
+tier_distribution.index = tier_distribution.index.astype(str) + "티어"
 
 max_pending_tier_text = "해당 없음"
 if '평가유예' in tier_distribution.columns and tier_distribution['평가유예'].sum() > 0:
