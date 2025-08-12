@@ -238,11 +238,11 @@ with col2:
     sub_col1, sub_col2, sub_col3 = st.columns(3)
 
     with sub_col1:
-        matches_texts = [f"{i+1}. **{int(row['현재 티어'])}티어** {row['이름']} ({int(row['총 경기수'])} 게임)" for i, (_, row) in enumerate(top_5_matches.iterrows())]
+        matches_texts = [f"{i+1}. **{int(row['현재 티어'])}티어** {row['이름']} ({int(row['총 경기수_numeric_safe'])} 게임)" for i, (_, row) in enumerate(top_5_matches.iterrows())]
         st.markdown("💪 **최다 게임 TOP 5**<br>" + "<br>".join(matches_texts), unsafe_allow_html=True)
 
     with sub_col2:
-        clutch_texts = [f"{i+1}. **{int(row['현재 티어'])}티어** {row['이름']} ({float(row['클러치']):.2f})" for i, (_, row) in enumerate(top_5_clutch.iterrows())]
+        clutch_texts = [f"{i+1}. **{int(row['현재 티어'])}티어** {row['이름']} ({float(row['클러치_numeric_safe']):.2f})" for i, (_, row) in enumerate(top_5_clutch.iterrows())]
         st.markdown("🎯 **최고 클러치 TOP 5**<br>" + "<br>".join(clutch_texts), unsafe_allow_html=True)
 
     with sub_col3:
