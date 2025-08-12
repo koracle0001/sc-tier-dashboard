@@ -237,7 +237,7 @@ with col2:
     display_win_rate_top5(sub_col3, top5_lowest_lower, "vs 하위티어(20전⬆️)", "하위티어")
 
     st.markdown("---")
-    sub_col1, sub_col2, sub_col3 = st.columns(3)
+    sub_col1, sub_col2, sub_col3 = st.columns([1.1, 1, 1])
 
     with sub_col1:
         matches_texts = [f"{i+1}. **{int(row['현재 티어'])}티어** {row['이름']} ({int(row['총 경기수_numeric_safe'])} 게임)" for i, (_, row) in enumerate(top_5_matches.iterrows())]
