@@ -228,22 +228,27 @@ with col1:
     if advanced_tier_df.empty:
         st.text("없음")
     else:
-        advanced_tier_df_sorted = advanced_tier_df.sort_values(by='sort_key_2')
-        player_strings = [f"{row['이름']} ({row['현재 티어']}티어)" for _, row in advanced_tier_df_sorted.iterrows()]
+        advanced_grouped = advanced_tier_df.sort_values(by='sort_key_2').groupby('sort_key_2', sort=False)
+        final_advanced_texts = []
+        for _, group in advanced_grouped:
+            player_strings = [f"{row['이름']} ({row['현재 티어']}티어)" for _, row in group.iterrows()]
+            if not player_strings: continue
+
+            lines_for_this_group = []
+            current_line = ""
+            for p_str in player_strings:
+                if not current_line:
+                    current_line = p_str
+                elif len(current_line) + len(", ") + len(p_str) > MAX_LINE_LENGTH:
+                    lines_for_this_group.append(current_line)
+                    current_line = p_str
+                else:
+                    current_line += f", {p_str}"
+            
+            lines_for_this_group.append(current_line)
+            final_advanced_texts.append("\n".join(lines_for_this_group))
         
-        lines_for_this_tier = []
-        current_line = ""
-        for p_str in player_strings:
-            if not current_line:
-                current_line = p_str
-            elif len(current_line) + len(", ") + len(p_str) > MAX_LINE_LENGTH:
-                lines_for_this_tier.append(current_line)
-                current_line = p_str
-            else:
-                current_line += f", {p_str}"
-        
-        lines_for_this_tier.append(current_line)
-        st.text("\n".join(lines_for_this_tier))
+        st.text("\n".join(final_advanced_texts))
 
     # 안내 문구
     st.markdown("※ 누락된 인원은 지속적으로 확인/갱신중입니다. \n\n유스도 가능한 반영하였습니다. \n\n이미지도 지속 갱신중입니다.")
