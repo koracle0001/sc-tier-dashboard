@@ -149,6 +149,10 @@ st.header('📌 주요 이슈 요약')
 # 데이터 추출
 promoted_df = df[df['티어 변동'].isin(['승급'])]
 demoted_df = df[df['티어 변동'] == '강등']
+advanced_tier_df = df[
+    df['현재 티어'].astype(str).str.contains('A') &
+    ~df['티어 변동'].isin(['평가유예', '비활성화'])
+]
 
 df['총 경기수_numeric_safe'] = pd.to_numeric(df['총 경기수'], errors='coerce')
 df['클러치_numeric_safe'] = pd.to_numeric(df['클러치'].astype(str).str.extract(r'(\d+\.?\d*)')[0], errors='coerce')
@@ -218,7 +222,29 @@ with col1:
     # 강등자 목록 표시 
     st.markdown("##### 📉 강등")
     st.text(format_player_list_by_tier(demoted_df, 'promotion'))
+
+    # A(advanced) 티어 목록 표시
+    st.markdown("##### 🅰️ A(advanced) 티어")
+    if advanced_tier_df.empty:
+        st.text("없음")
+    else:
+        advanced_tier_df_sorted = advanced_tier_df.sort_values(by='sort_key_2')
+        player_strings = [f"{row['이름']} ({row['현재 티어']}티어)" for _, row in advanced_tier_df_sorted.iterrows()]
         
+        lines_for_this_tier = []
+        current_line = ""
+        for p_str in player_strings:
+            if not current_line:
+                current_line = p_str
+            elif len(current_line) + len(", ") + len(p_str) > MAX_LINE_LENGTH:
+                lines_for_this_tier.append(current_line)
+                current_line = p_str
+            else:
+                current_line += f", {p_str}"
+        
+        lines_for_this_tier.append(current_line)
+        st.text("\n".join(lines_for_this_tier))
+
     # 안내 문구
     st.markdown("※ 누락된 인원은 지속적으로 확인/갱신중입니다. \n\n유스도 가능한 반영하였습니다. \n\n이미지도 지속 갱신중입니다.")
 with col2:
