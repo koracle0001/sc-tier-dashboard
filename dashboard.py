@@ -72,7 +72,7 @@ def display_win_rate_top5(column, dataframe, stat_name_kor, stat_name_eng):
 st.title('⭐ 스타크래프트 여캠 밸런스 티어표 HOTFIX')
 st.markdown("""
 <div style="text-align: left;">
-    <p style="font-size: 1.1em; margin-bottom: 0;"><b>데이터 갱신일: 2025-07-16</b></p>
+    <p style="font-size: 1.1em; margin-bottom: 0;"><b>데이터 갱신일: 2025-08-16</b></p>
     <p style="margin-bottom: 0.1em;">평가기간: 2025-05-24 ~ 2025-07-16</p>
     <p style="font-size: 0.9em;">제작자: UnKn0wn1</p>
 </div>
