@@ -173,16 +173,17 @@ top5_lowest_higher = higher_tier_filtered_df[higher_tier_filtered_df['상위티�
 top5_lowest_lower = lower_tier_filtered_df[lower_tier_filtered_df['하위티어 승률_numeric'] > 0].sort_values(by='하위티어 승률_numeric', ascending=True).head(3)
 
 metrics_players_df = valid_players_df[~valid_players_df['현재 티어'].astype(str).str.contains('9|8|7|1|0')]
+metrics_players_df = metrics_players_df.dropna(subset=['클러치_numeric_safe'])
 
 top_5_matches = valid_players_df.sort_values(by='총 경기수_numeric_safe', ascending=False).head(5)
 top_5_clutch = metrics_players_df.sort_values(by='클러치_numeric_safe', ascending=False).head(5)
 
-col1, col2, col3 = st.columns([1.4, 2.8, 1.8])
+col1, col2, col3 = st.columns([1.8, 2.8, 1.4])
 
 with col1:
     st.markdown("#### ✒️ 티어 변동")
     st.markdown("##### 📈 승급")
-    MAX_LINE_LENGTH = 36
+    MAX_LINE_LENGTH = 40
 
     promoted_grouped = promoted_df.sort_values(by='sort_key_2').groupby('sort_key_2', sort=False)  
     
@@ -235,7 +236,7 @@ with col2:
     display_win_rate_top5(sub_col3, top5_lowest_lower, "vs 하위티어(20전⬆️)", "하위티어")
 
     st.markdown("---")
-    sub_col1, sub_col2, sub_col3 = st.columns(3)
+    sub_col1, sub_col2, sub_col3 = st.columns([1.2, 1, 1])
 
     with sub_col1:
         matches_texts = [f"{i+1}. **{int(row['현재 티어'])}티어** {row['이름']} ({int(row['총 경기수_numeric_safe'])} 게임)" for i, (_, row) in enumerate(top_5_matches.iterrows())]
@@ -246,9 +247,9 @@ with col2:
         st.markdown("🎯 **최고 클러치 TOP 5**<br>" + "<br>".join(clutch_texts), unsafe_allow_html=True)
 
     with sub_col3:
-        gainer_texts = [f"{i+1}. **{row['티어']}티어** {row['선수이름']} ({row['점수상승폭']})" 
-                        for i, row in top_5_gainers_df.iterrows()]
-
+        top_5_gainers_df['점수상승폭'] = pd.to_numeric(top_5_gainers_df['점수상승폭'], errors='coerce')
+        gainer_texts = [f"{i+1}. **{row['티어']}티어** {row['선수이름']} (+{row['점수상승폭']:.1f}점)" 
+                        for i, row in top_5_gainers_df.iterrows() if pd.notna(row['점수상승폭'])]
         st.markdown("🔥 **점수상승폭 TOP 5**<br>"+ "<br>".join(gainer_texts), unsafe_allow_html=True)
  
 with col3:
