@@ -11,6 +11,9 @@ st.set_page_config(layout="wide", page_title="스타 여캠 밸런스 티어표"
 def highlight_rows(row):
     style = ''
 
+    if 'A' in str(row['현재 티어']):
+        return ['background-color: lightsalmon;'] * len(row)
+
     if row['티어 변동'] == '비활성화':
         return ['background-color: black; color: white;'] * len(row)
 
