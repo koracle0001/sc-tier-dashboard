@@ -290,8 +290,11 @@ with col3:
     <div style="background-color: #e6f3ff; border-left: 5px solid #1a8cff; padding: 10px; border-radius: 5px; margin: 10px 0; color: #31333F;">
         <ul style="list-style-type: none; padding-left: 0; margin-bottom: 0;">
             <li style="margin-bottom: 8px;">
-                <strong>클러치</strong>: 스폰 게임 대비 중요 경기 기대 승률<br>
-                <span style="font-size: 0.9em;">(높을수록 큰 경기에 강함, 2~6티어 한정으로 표기)</span>
+                <strong>A티어</strong>: 티어 경계선에 있는 플레이어를 대상으로 한 일종의 승급 심사 상태
+            </li>
+            <li style="margin-bottom: 8px;">
+                <strong>클러치</strong>: 중요 경기 성과를 기준으로 티어 내 플레이어의 성과를 비교하는 상대 평가지표<br>
+                <span style="font-size: 0.9em;">(높을수록 큰 경기에 강함, 스폰게임은 제외)</span>
             </li>
             <li style="margin-bottom: 8px;">
                 <strong>로직 신뢰도 등급</strong>: 판정 결과의 유효 지속성<br>
