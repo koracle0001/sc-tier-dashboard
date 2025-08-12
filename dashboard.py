@@ -23,9 +23,6 @@ def highlight_rows(row):
     if row['티어 변동'] in ['유예']:
         style = 'background-color: #E5E4E2; color: black;'
                
-    if '상태' in row and row['상태'] == '이레귤러':
-        style = 'background-color: lightsalmon; color: black;'
-
     return [style] * len(row)
 
 def format_player_list_by_tier(player_df, format_type):
@@ -93,10 +90,17 @@ st.markdown("""
 """, unsafe_allow_html=True)
 # --- 데이터 파일 불러오기 ---
 try:
-    df = pd.read_excel('public_report.xlsx')
+    # 첫 번째 탭(종합 리포트)
+    df = pd.read_excel('public_report.xlsx', sheet_name='종합 리포트')
+    # 두 번째 탭(점수 상승 Top 5)
+    top_5_gainers_df = pd.read_excel('public_report.xlsx', sheet_name='점수 상승 Top 5')
 except FileNotFoundError:
     st.error("리포트 파일을 찾을 수 없습니다. (public_report.xlsx)")
     st.stop()
+except ValueError as e: 
+    st.warning("'점수 상승 Top 5' 탭을 찾을 수 없습니다. 해당 부분은 비워둡니다.")
+    # 시트가 없을 경우, 빈 데이터프레임을 생성하여 에러 방지
+    top_5_gainers_df = pd.DataFrame(columns=['티어', '종족', '선수이름', '점수상승폭'])
 
 for col in ['동티어 승률', '상위티어 승률', '하위티어 승률']:
     df[f'{col}_numeric'] = df[col].astype(str).str.extract(r'(\d+\.?\d*)').astype(float).fillna(0)
@@ -131,7 +135,6 @@ display_df = df_sorted[display_columns]
 styled_df = display_df.style.apply(highlight_rows, axis=1) \
                           .format({
                               '클러치': lambda x: f'{x:.2f}' if isinstance(x, (int, float)) else x,
-                              '표리부동': lambda x: f'{x:.2f}' if isinstance(x, (int, float)) else x
                           })
 
 # 최종적으로 st.dataframe으로 표를 표시
@@ -145,16 +148,13 @@ st.header('📌 주요 이슈 요약')
 # 데이터 추출
 promoted_df = df[df['티어 변동'].isin(['승급'])]
 demoted_df = df[df['티어 변동'] == '강등']
-irregular_df = df[df['상태'] == '이레귤러'] if '상태' in df.columns else pd.DataFrame()
 
 df['총 경기수_numeric_safe'] = pd.to_numeric(df['총 경기수'], errors='coerce')
 df['클러치_numeric_safe'] = pd.to_numeric(df['클러치'], errors='coerce')
-df['표리부동_numeric_safe'] = pd.to_numeric(df['표리부동'], errors='coerce')
 
 valid_players_df = df[df['분류'] == '유효']
 most_matches_player = valid_players_df.loc[valid_players_df['총 경기수_numeric_safe'].idxmax()]
 highest_clutch_player = valid_players_df.loc[valid_players_df['클러치_numeric_safe'].idxmax()]
-highest_hypocrisy_player = valid_players_df.loc[valid_players_df['표리부동_numeric_safe'].idxmax()]
 
 same_tier_filtered_df = valid_players_df[valid_players_df['동티어_경기수'] >= 40]
 top5_highest_same = same_tier_filtered_df.sort_values(by='동티어 승률_numeric', ascending=False).head(3)
@@ -171,7 +171,6 @@ metrics_players_df = valid_players_df[~valid_players_df['현재 티어'].isin([0
 
 top_5_matches = valid_players_df.sort_values(by='총 경기수_numeric_safe', ascending=False).head(5)
 top_5_clutch = metrics_players_df.sort_values(by='클러치_numeric_safe', ascending=False).head(5)
-top_5_hypocrisy = metrics_players_df.sort_values(by='표리부동_numeric_safe', ascending=False).head(5)
 
 col1, col2, col3 = st.columns([1.4, 2.8, 1.8])
 
@@ -217,11 +216,6 @@ with col1:
     # 강등자 목록 표시 
     st.markdown("##### 📉 강등")
     st.text(format_player_list_by_tier(demoted_df, 'promotion'))
-
-    # 이레귤러 목록 표시  
-    if '상태' in df.columns and not irregular_df.empty:
-        st.markdown("##### ⁉️ 이레귤러")
-        st.text(format_player_list_by_tier(irregular_df, 'irregular'))
         
     # 안내 문구
     st.markdown("※ 누락된 인원은 지속적으로 확인/갱신중입니다. \n\n유스도 가능한 반영하였습니다. \n\n이미지도 지속 갱신중입니다.")
@@ -252,8 +246,10 @@ with col2:
         st.markdown("🎯 **최고 클러치 TOP 5**<br>" + "<br>".join(clutch_texts), unsafe_allow_html=True)
 
     with sub_col3:
-        hypocrisy_texts = [f"{i+1}. **{int(row['현재 티어'])}티어** {row['이름']} ({float(row['표리부동']):.2f})" for i, (_, row) in enumerate(top_5_hypocrisy.iterrows())]
-        st.markdown("🤔 **최고 표리부동 TOP 5**<br>" + "<br>".join(hypocrisy_texts), unsafe_allow_html=True)
+        gainer_texts = [f"{i+1}. **{row['티어']}티어** {row['선수이름']} ({row['점수상승폭']})" 
+                        for i, row in top_5_gainers_df.iterrows()]
+
+        st.markdown("🔥 **점수상승폭 TOP 5**<br>"+ "<br>".join(gainer_texts), unsafe_allow_html=True)
  
 with col3:
     st.markdown("#### ℹ️ 지표 설명")
@@ -261,16 +257,8 @@ with col3:
     <div style="background-color: #e6f3ff; border-left: 5px solid #1a8cff; padding: 10px; border-radius: 5px; margin: 10px 0; color: #31333F;">
         <ul style="list-style-type: none; padding-left: 0; margin-bottom: 0;">
             <li style="margin-bottom: 8px;">
-                <strong>이레귤러</strong>: 특정상황에서 티어 내 강자를 의미<br>
-                <span style="font-size: 0.9em;">(티어 내 순위와는 무관)</span>
-            </li>
-            <li style="margin-bottom: 8px;">
                 <strong>클러치</strong>: 스폰 게임 대비 중요 경기 기대 승률<br>
                 <span style="font-size: 0.9em;">(높을수록 큰 경기에 강함, 2~6티어 한정으로 표기)</span>
-            </li>
-            <li>
-                <strong>표리부동</strong>: wwe/ufc 승리비율<br>
-                <span style="font-size: 0.8em;">(낮을수록 변수대처 능력이 좋거나, 빌드수행력이 우수함)</span>
             </li>
             <li style="margin-bottom: 8px;">
                 <strong>로직 신뢰도 등급</strong>: 판정 결과의 유효 지속성<br>
