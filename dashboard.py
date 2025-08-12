@@ -69,7 +69,7 @@ def display_win_rate_top5(column, dataframe, stat_name_kor, stat_name_eng):
 # --------------------
 
 # --- 대시보드 제목 설정 ---
-st.title('⭐ 스타크래프트 여캠 밸런스 티어표')
+st.title('⭐ 스타크래프트 여캠 밸런스 티어표 HOTFIX')
 st.markdown("""
 <div style="text-align: left;">
     <p style="font-size: 1.1em; margin-bottom: 0;"><b>데이터 갱신일: 2025-07-16</b></p>
