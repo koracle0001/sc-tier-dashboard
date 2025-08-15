@@ -52,34 +52,106 @@
             .stats-grid-quadrant p {margin: 0; font-size: 0.85rem; line-height: 1.7; color: #495057;}
 
             @media (max-width: 768px) {
+                html {
+                    height: -webkit-fill-available;
+                }
+
                 body {
                     height: auto;  
+                    min-height: 100vh;
+                    min-height: -webkit-fill-available;
+                    -webkit-overflow-scrolling: touch;
+                    overflow-scrolling: touch;
+                    transform: translateZ(0);
+                    -webkit-transform: translateZ(0);
                 }
+                
                 .main-container {
-                    flex-direction: column; 
-                    flex-grow: 0;  
-                    min-height: auto;  
+                    flex-direction: column;
+                    flex-grow: 0;
+                    min-height: auto;
+                    contain: layout;
+                    padding: 4px;
                 }
+                
                 .left-panel, .right-panel {
-                    flex: 1 1 100%; 
+                    flex: 1 1 auto;
+                    min-height: 300px;
+                    max-height: none; 
                 }
+                
                 .right-top-row {
                     flex-direction: column;  
                     flex-basis: auto; 
+                    min-height: 500px;
                 }
+
+                .chart-container {
+                    will-change: transform;
+                    transform: translateZ(0);
+                    min-height: 250px;
+                    flex-shrink: 0;
+                    margin-bottom: 8px;
+                }
+
+                .stats-container {
+                    min-height: 200px;
+                    max-height: 400px;
+                    overflow-y: auto;
+                    -webkit-overflow-scrolling: touch;
+                    overflow-scrolling: touch;
+                }
+
                 .controls {
+                    flex-shrink: 0;
+                    padding: 8px;
+                    position: sticky;
+                    top: 0;
+                    z-index: 100;
                     display: flex;
                     flex-direction: column;
                     gap: 5px;
                 }
-                #playerSearch {
-                    width: 95%;
+                
+                #scatter-plot {
+                     height: 300px !important;
+                     min-height: 300px;
                 }
+                
+                #radar-chart {
+                    height: 250px !important;
+                    min-height: 250px;
+                }
+    
+                #line-chart {
+                    height: 250px !important;
+                    min-height: 250px;
+                }
+                
+                
+                #playerSearch {
+                    width: calc(100% - 80px);
+                    margin-right: 8px;
+                }
+                
                 #searchButton {
+                    width: 70px;
+                    flex-shrink: 0;
                     align-self: flex-start;
                 }
             }
             
+            @supports (-webkit-touch-callout: none) {
+                @media (max-width: 768px) {
+                    body {
+                        min-height: -webkit-fill-available;
+                    }
+                    .main-container {
+                        min-height: calc(-webkit-fill-available - 60px);
+                    }
+                }
+            }
+        
             .h2h-container { text-align: center; margin-bottom: 12px; }
             .h2h-score { font-size: 1.2rem; font-weight: bold; margin-bottom: 8px; }
             .h2h-bar-container { display: flex; width: 100%; height: 20px; background-color: #e9ecef; border-radius: 4px; overflow: hidden; }
@@ -203,13 +275,25 @@
             const searchButton = document.getElementById('searchButton');
 
             const isMobile = window.innerWidth <= 768;
-            const plotlyConfig = {
-                responsive: true,
-                displayModeBar: !isMobile,  
-                scrollZoom: false,          
-                displaylogo: false,         
-                staticPlot: isMobile, 
+            const mobileConfig = {
+                responsive: false,
+                displayModeBar: false,
+                scrollZoom: false,
+                displaylogo: false,
+                staticPlot: true,
+                doubleClick: false,
+                showTips: false
             };
+
+            const desktopConfig = {
+                responsive: true,
+                displayModeBar: true,
+                scrollZoom: false,
+                displaylogo: false,
+                staticPlot: false
+            };
+
+            const plotlyConfig = isMobile ? mobileConfig : desktopConfig;
 
             const backgroundTrace = { x: playerData.map(p => p.ap_score), y: playerData.map(p => p.clutch_val), mode: 'markers', marker: { color: '#a0a0a0', size: 8, opacity: 0.6 }, text: playerData.map(p => p.player), hoverinfo: 'text', type: 'scatter' };
             const scatterLayout = {
@@ -235,6 +319,27 @@
                     timeout = setTimeout(later, wait);
                 };
             };
+            
+            let isResizing = false;
+            let currentPlayers = [];            
+
+            function optimizedResize() {
+                if (isResizing) return;
+                isResizing = true;
+
+                requestAnimationFrame(() => {
+                    if (currentPlayers.length > 0) {
+                        try {
+                            Plotly.Plots.resize(scatterDiv);
+                            Plotly.Plots.resize(radarDiv);
+                            Plotly.Plots.resize(lineDiv);
+                        } catch (e) {
+                            console.warn('Chart resize failed:', e);
+                        }
+                    }
+                    isResizing = false;
+                });
+            }
 
             function parseWinsVsOpponent(recordString, opponentName)  {
                 if (!recordString || !opponentName) return null;
@@ -588,6 +693,7 @@
             }
             
             function updateCharts(selectedPlayers = []) {
+                currentPlayers = selectedPlayers; 
                 Plotly.react(scatterDiv, [backgroundTrace, ...selectedPlayers.map((p, i) => {
                     const d = playerData.find(pl => pl.player === p);
                     return d ? { x: [d.ap_score], y: [d.clutch_val], mode: 'markers', marker: { color: highlightColors[i], symbol: highlightSymbols[i], size: 12, line: {width: 1.5, color: 'black'} }, name: d.player, hoverinfo: isMobile ? 'none' : 'text', type: 'scatter' } : null;
@@ -656,12 +762,18 @@
             
             updateCharts([]);
 
-            const debouncedResize = debounce(() => {
-                const names = searchInput.value.split(',').map(name => name.trim()).filter(Boolean);
-                updateCharts(names.slice(0, 4));
-            }, 150); 
-            
-            window.addEventListener('resize', debouncedResize);
+            if (isMobile) {
+                document.querySelectorAll('.chart-container').forEach(container => {
+                    container.style.minHeight = '250px';
+                });
+                document.body.style.touchAction = 'pan-y';
+            }
+
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(optimizedResize, 100);
+            });
 
         </script>
     </body>
