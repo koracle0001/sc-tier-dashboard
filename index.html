@@ -51,9 +51,31 @@
             .stats-grid-quadrant h5 {margin: 0 0 8px 0; font-size: 0.9rem; color: #333; padding-bottom: 4px; border-bottom: 1px solid #eee;}
             .stats-grid-quadrant p {margin: 0; font-size: 0.85rem; line-height: 1.7; color: #495057;}
 
-            @media (max-width: 1024px) {
-                .main-container, .right-top-row { flex-direction: column; }
-                .right-top-row { flex: 0 0 auto; }
+            @media (max-width: 768px) {
+                body {
+                    height: auto;  
+                }
+                .main-container {
+                    flex-direction: column; 
+                }
+                .left-panel, .right-panel {
+                    flex: 1 1 100%; 
+                }
+                .right-top-row {
+                    flex-direction: column;  
+                    flex-basis: auto; 
+                }
+                .controls {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 5px;
+                }
+                #playerSearch {
+                    width: 95%;
+                }
+                #searchButton {
+                    align-self: flex-start;
+                }
             }
             
             .h2h-container { text-align: center; margin-bottom: 12px; }
