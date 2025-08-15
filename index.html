@@ -517,8 +517,8 @@
                         p1.inGroupWR = calculateInGroupWinRate(p1, opponents);
                     });
                     
-                    const firstTier = fourPlayers[0].initial_tier;
-                    const isSameTierGroup = fourPlayers.every(p => p.initial_tier === firstTier);
+                    const firstTier = parseInt(fourPlayers[0].current_tier); // '7A' 같은 문자열에서 숫자 7을 추출
+                    const isSameTierGroup = fourPlayers.every(p => parseInt(p.current_tier) === firstTier);
 
                     let metricsConfig = [
                         { label: '그룹 내 승률', key: 'inGroupWR', isPercent: true, decimals: 1 },
