@@ -41,7 +41,7 @@
                 min-height: 0;
             }
 
-            .stats-container { padding: 12px; overflow-y: auto; }
+            .stats-container { padding: 12px; overflow-y: auto; min-height: 250px;}
             .stats-card { margin-bottom: 12px; }
             
             .stats-card h4 { margin: 0 0 8px 0; padding-bottom: 4px; border-bottom: 2px solid #636efa; color: #636efa; font-size: 1rem; text-align: center;}
@@ -205,11 +205,13 @@
             const isMobile = window.innerWidth <= 768;
             const plotlyConfig = {
                 responsive: true,
-                staticPlot: isMobile, // 모바일이면 정적차트
-                displayModeBar: !isMobile // 모바일이면 툴바 숨김
+                displayModeBar: !isMobile,  
+                scrollZoom: false,          
+                displaylogo: false,         
+                modeBarButtonsToRemove: ['zoom2d', 'pan2d', 'select2d', 'lasso2d', 'zoomIn2d', 'zoomOut2d', 'autoScale2d', 'resetScale2d']
             };
 
-            const backgroundTrace = { x: playerData.map(p => p.ap_score), y: playerData.map(p => p.clutch_val), mode: 'markers', marker: { color: '#a0a0a0', size: 8, opacity: 0.6 }, text: playerData.map(p => p.player), hoverinfo: isMobile ? 'none' : 'text', type: 'scatter' };
+            const backgroundTrace = { x: playerData.map(p => p.ap_score), y: playerData.map(p => p.clutch_val), mode: 'markers', marker: { color: '#a0a0a0', size: 8, opacity: 0.6 }, text: playerData.map(p => p.player), hoverinfo: 'text', type: 'scatter' };
             const scatterLayout = {
                 autosize: true,
                 title: "플레이어 성향 지도",
@@ -220,6 +222,18 @@
                 margin: { t: 40, b: 40, l: 40, r: 20 }, 
                 shapes: [ { type: 'line', x0: 80.83039548022599, y0: 0, x1: 80.83039548022599, y1: 1, yref: 'paper', line: { color: 'grey', width: 1, dash: 'dash' } }, { type: 'line', x0: 0, y0: 1.4318852459016393, x1: 1, y1: 1.4318852459016393, xref: 'paper', line: { color: 'grey', width: 1, dash: 'dash' } } ],
                 annotations: [ { x: 0.98, y: 0.98, xanchor: 'right', yanchor: 'top', xref: 'paper', yref: 'paper', text: '재능있는 노력가', showarrow: false, font:{color:'grey', size:12} }, { x: 0.02, y: 0.98, xanchor: 'left', yanchor: 'top', xref: 'paper', yref: 'paper', text: '재능있는 한량', showarrow: false, font:{color:'grey', size:12} }, { x: 0.02, y: 0.02, xanchor: 'left', yanchor: 'bottom', xref: 'paper', yref: 'paper', text: '증명이 필요한 미생', showarrow: false, font:{color:'grey', size:12} }, { x: 0.98, y: 0.02, xanchor: 'right', yanchor: 'bottom', xref: 'paper', yref: 'paper', text: '성실한 노력가', showarrow: false, font:{color:'grey', size:12} } ]
+            };
+
+            function debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
             };
 
             function parseWinsVsOpponent(recordString, opponentName)  {
@@ -642,10 +656,13 @@
             
             updateCharts([]);
 
-            window.addEventListener('resize', () => {
+            const debouncedResize = debounce(() => {
                 const names = searchInput.value.split(',').map(name => name.trim()).filter(Boolean);
                 updateCharts(names.slice(0, 4));
-            });
+            }, 150); 
+            
+            window.addEventListener('resize', debouncedResize);
+
         </script>
     </body>
     </html>
