@@ -199,7 +199,14 @@
             const statsDiv = document.getElementById('stats-display');
             const searchInput = document.getElementById('playerSearch');
             const searchButton = document.getElementById('searchButton');
-            
+
+            const isMobile = window.innerWidth <= 768;
+            const plotlyConfig = {
+                responsive: true,
+                staticPlot: isMobile, // 모바일이면 정적차트
+                displayModeBar: !isMobile // 모바일이면 툴바 숨김
+            };
+
             const backgroundTrace = { x: playerData.map(p => p.ap_score), y: playerData.map(p => p.clutch_val), mode: 'markers', marker: { color: '#a0a0a0', size: 8, opacity: 0.6 }, text: playerData.map(p => p.player), hoverinfo: 'text', type: 'scatter' };
             const scatterLayout = {
                 autosize: true,
@@ -568,7 +575,7 @@
                 Plotly.react(scatterDiv, [backgroundTrace, ...selectedPlayers.map((p, i) => {
                     const d = playerData.find(pl => pl.player === p);
                     return d ? { x: [d.ap_score], y: [d.clutch_val], mode: 'markers', marker: { color: highlightColors[i], symbol: highlightSymbols[i], size: 12, line: {width: 1.5, color: 'black'} }, name: d.player, hoverinfo: 'text', type: 'scatter' } : null;
-                }).filter(Boolean)], scatterLayout, {responsive: true});
+                }).filter(Boolean)], scatterLayout, plotlyConfig);
 
                 if (selectedPlayers.length > 0) {
                     const radarData = selectedPlayers.map((p, i) => {
@@ -585,10 +592,10 @@
                                   radialaxis: {showticklabels: false, showline: false, autorange: true}
                                 }
                     };
-                    Plotly.react(radarDiv, radarData, radarLayout, {responsive: true});
+                    Plotly.react(radarDiv, radarData, radarLayout, plotlyConfig);
                 } else {
                     const placeholderLayout = { autosize: true, title: { text: '플레이어를 검색하면 능력치 레이더가 표시됩니다.', font: { size: 14, color: 'black' }, x: 0.5, xanchor: 'center' }, margin: { t: 40, b: 40, l: 40, r: 40 } };
-                    Plotly.react(radarDiv, [], placeholderLayout, {responsive: true});
+                    Plotly.react(radarDiv, [], placeholderLayout, plotlyConfig);
                 }
 
                 if (selectedPlayers.length > 0) {
@@ -616,9 +623,9 @@
                     const day = String(startDateObj.getDate()).padStart(2, '0');
                     const newStartDateStr = `${year}-${month}-${day}`;
 
-                    Plotly.react(lineDiv, lineData, { autosize: true, title: '개인별 점수 변동 추이', yaxis: { title: '점수', range: finalYAxisRange, autorange: false, showticklabels: false, showline: true, linecolor: 'black', linewidth: 1}, xaxis: { type: 'date',  range: [newStartDateStr, endDateStr], tickmode: 'array', tickvals: ["2025-05-24", "2025-06-03", "2025-06-14", "2025-06-24", "2025-07-05", "2025-07-16"], tickformat: '%m/%d', showline: true, linecolor: 'black', linewidth: 1 }, showlegend: true, margin: { t: 40, b: 40, l: 40, r: 20 } }, {responsive: true});
+                    Plotly.react(lineDiv, lineData, { autosize: true, title: '개인별 점수 변동 추이', yaxis: { title: '점수', range: finalYAxisRange, autorange: false, showticklabels: false, showline: true, linecolor: 'black', linewidth: 1}, xaxis: { type: 'date',  range: [newStartDateStr, endDateStr], tickmode: 'array', tickvals: ["2025-05-24", "2025-06-03", "2025-06-14", "2025-06-24", "2025-07-05", "2025-07-16"], tickformat: '%m/%d', showline: true, linecolor: 'black', linewidth: 1 }, showlegend: true, margin: { t: 40, b: 40, l: 40, r: 20 } }, plotlyConfig);
                 } else {
-                    Plotly.react(lineDiv, [], {autosize: true, title: '플레이어를 검색하면 점수 변동 추이가 표시됩니다.', margin: { t: 40, b: 40, l: 40, r: 20 } }, {responsive: true});
+                    Plotly.react(lineDiv, [], {autosize: true, title: '플레이어를 검색하면 점수 변동 추이가 표시됩니다.', margin: { t: 40, b: 40, l: 40, r: 20 } }, plotlyConfig);
                 }
 
                 updateStatsDisplay(selectedPlayers);
