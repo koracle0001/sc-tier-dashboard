@@ -209,7 +209,7 @@
                 displayModeBar: !isMobile // 모바일이면 툴바 숨김
             };
 
-            const backgroundTrace = { x: playerData.map(p => p.ap_score), y: playerData.map(p => p.clutch_val), mode: 'markers', marker: { color: '#a0a0a0', size: 8, opacity: 0.6 }, text: playerData.map(p => p.player), hoverinfo: 'text', type: 'scatter' };
+            const backgroundTrace = { x: playerData.map(p => p.ap_score), y: playerData.map(p => p.clutch_val), mode: 'markers', marker: { color: '#a0a0a0', size: 8, opacity: 0.6 }, text: playerData.map(p => p.player), hoverinfo: isMobile ? 'none' : 'text', type: 'scatter' };
             const scatterLayout = {
                 autosize: true,
                 title: "플레이어 성향 지도",
@@ -576,7 +576,7 @@
             function updateCharts(selectedPlayers = []) {
                 Plotly.react(scatterDiv, [backgroundTrace, ...selectedPlayers.map((p, i) => {
                     const d = playerData.find(pl => pl.player === p);
-                    return d ? { x: [d.ap_score], y: [d.clutch_val], mode: 'markers', marker: { color: highlightColors[i], symbol: highlightSymbols[i], size: 12, line: {width: 1.5, color: 'black'} }, name: d.player, hoverinfo: 'text', type: 'scatter' } : null;
+                    return d ? { x: [d.ap_score], y: [d.clutch_val], mode: 'markers', marker: { color: highlightColors[i], symbol: highlightSymbols[i], size: 12, line: {width: 1.5, color: 'black'} }, name: d.player, hoverinfo: isMobile ? 'none' : 'text', type: 'scatter' } : null;
                 }).filter(Boolean)], scatterLayout, plotlyConfig);
 
                 if (selectedPlayers.length > 0) {
