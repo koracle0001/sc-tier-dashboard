@@ -72,7 +72,7 @@ def display_win_rate_top5(column, dataframe, stat_name_kor, stat_name_eng):
 st.title('⭐ 스타크래프트 여캠 밸런스 티어표 HOTFIX')
 st.markdown("""
 <div style="text-align: left;">
-    <p style="font-size: 1.1em; margin-bottom: 0;"><b>데이터 갱신일: 2025-08-16</b></p>
+    <p style="font-size: 1.1em; margin-bottom: 0;"><b>데이터 갱신일: 2025-08-17</b></p>
     <p style="margin-bottom: 0.1em;">평가기간: 2025-05-24 ~ 2025-07-16</p>
     <p style="font-size: 0.9em;">제작자: UnKn0wn1</p>
 </div>
@@ -290,7 +290,7 @@ with col3:
     <div style="background-color: #e6f3ff; border-left: 5px solid #1a8cff; padding: 10px; border-radius: 5px; margin: 10px 0; color: #31333F;">
         <ul style="list-style-type: none; padding-left: 0; margin-bottom: 0;">
             <li style="margin-bottom: 8px;">
-                <strong>A티어</strong>: 티어 경계선에 있는 플레이어를 대상으로 한 일종의 승급 심사 상태
+                <strong>A티어</strong>: 티어 경계선에 있는 플레이어를 대상으로 한 일종의 확정승급 심사 상태
             </li>
             <li style="margin-bottom: 8px;">
                 <strong>클러치</strong>: 중요 경기 성과를 기준으로 티어 내 플레이어의 성과를 비교하는 상대 평가지표<br>
